@@ -180,24 +180,46 @@ footer{text-align:center;font-size:11px;color:var(--tx3);margin-top:2rem;line-he
 footer a{color:var(--ob-mid);text-decoration:none}
 
 @media(max-width:500px){
-  .header{padding:.7rem 1rem}
+  .header{padding:.7rem 1rem;gap:.7rem}
   .header img{height:34px}
   .header-text h1{font-size:14px}
-  .ss-btn .ss-year{font-size:18px}
+  .header-text p{font-size:10px}
+  .hstatus{font-size:10px}
+  .ss-btn{padding:.75rem .5rem}
+  .ss-btn .ss-year{font-size:17px}
+  .ss-btn .ss-label{font-size:9px}
   .ob-grid,.pred-grid{grid-template-columns:repeat(3,1fr)}
+  .ob-stat-v,.pred-m-v{font-size:15px}
+  .ob-badge-v{font-size:24px}
   .insight-grid{grid-template-columns:1fr 1fr}
-  .pred-pos{font-size:40px}
+  .pred-pos{font-size:38px}
+  .pred-sub{font-size:11px}
   .liga-table{font-size:11px}
-  .liga-table td,.liga-table th{padding:5px 5px}
+  .liga-table td,.liga-table th{padding:5px 4px}
   .wrap{padding:1rem .75rem 2rem}
-  .card-body{padding:.8rem .9rem}
-  .pn{width:90px;font-size:12px}
-  .sub-tab{padding:5px 12px;font-size:12px}
+  .card-body{padding:.8rem .85rem}
+  .card-hdr{padding:.55rem .85rem}
+  .card-hdr span{font-size:12px}
+  .pn{width:85px;font-size:11px}
+  .sub-tab{padding:5px 10px;font-size:11px}
+  .kamp{padding:.55rem .75rem;gap:6px;font-size:12px}
+  .kamp-dato{width:42px;font-size:10px}
+  .kamp-tur{width:42px;font-size:10px}
+  .pokal-runde-titel{font-size:9px;padding:.5rem .75rem .25rem}
+  .pokal-kamp{padding:.55rem .75rem;font-size:12px}
+  .prob-row{gap:7px}
+  .pp{min-width:36px;font-size:11px}
+  .ob-top{gap:.7rem}
+  .ob-logo{height:38px}
+  .ob-info h2{font-size:15px}
 }
 @media(max-width:360px){
   .ob-grid,.pred-grid{grid-template-columns:repeat(2,1fr)}
   .insight-grid{grid-template-columns:1fr}
   .season-switcher{flex-direction:column}
+  .sub-tabs{gap:4px}
+  .sub-tab{padding:4px 8px;font-size:10px}
+  .kamp-hold em{display:none}
 }
 @supports(-webkit-touch-callout:none){
   .wrap{padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
