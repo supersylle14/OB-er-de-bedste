@@ -260,7 +260,7 @@ function parseStandingsFromHTML(html) {
     const teams = [];
 
     for (const row of rows) {
-      const tds = Array.from(row.querySelectorAll('td'));
+      const tds = Array.from(row.querySelectorAll('td, th'));
       // Need at least 10 cells: pos, team, pld, w, d, l, gf, ga, gd, pts
       if (tds.length < 10) continue;
 
