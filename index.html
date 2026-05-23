@@ -19,13 +19,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .header img{height:46px;width:auto;flex-shrink:0}
 .header-text h1{font-size:18px;font-weight:700;color:#fff;margin-bottom:1px}
 .header-text p{font-size:11px;color:rgba(255,255,255,.55)}
-.header-status{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,.65)}
+.hstatus{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,.65)}
 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .dot-live{background:#4ade80;animation:pulse 2s ease-in-out infinite}
 .dot-err{background:#f87171}.dot-load{background:#fbbf24}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 .wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 3rem}
-
 .ob-hero{background:linear-gradient(135deg,var(--ob) 0%,var(--ob-mid) 100%);
   border-radius:var(--r);padding:1.4rem;margin-bottom:1rem;color:#fff;overflow:hidden;position:relative}
 .ob-hero::before{content:'';position:absolute;right:-20px;top:-20px;width:150px;height:150px;
@@ -35,7 +34,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .ob-pct-block{margin-left:auto;text-align:right}
 .ob-pct-lbl{font-size:11px;opacity:.6}
 .ob-pct-val{font-size:30px;font-weight:800;line-height:1}
-.ob-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px;margin-bottom:.75rem}
+.ob-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:.75rem}
 .ob-m{background:rgba(255,255,255,.13);border-radius:var(--rs);padding:.65rem .9rem}
 .ob-m-l{font-size:10px;opacity:.6;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em}
 .ob-m-v{font-size:18px;font-weight:700}
@@ -47,23 +46,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .fw{background:rgba(74,222,128,.25);color:#86efac}
 .fdraw{background:rgba(251,191,36,.2);color:#fde68a}
 .fl{background:rgba(248,113,113,.2);color:#fca5a5}
+.ob-splits{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.75rem}
+.ob-split{background:rgba(255,255,255,.1);border-radius:var(--rs);padding:.6rem .9rem}
+.ob-split-l{font-size:10px;opacity:.55;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.ob-split-v{font-size:13px;font-weight:600}
 
 .card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:1rem;overflow:hidden}
 .card-hdr{background:var(--ob);padding:.65rem 1.1rem;display:flex;align-items:center}
 .card-hdr span{font-size:13px;font-weight:600;color:#fff}
 .card-hdr small{font-size:11px;color:rgba(255,255,255,.5);margin-left:auto}
 .card-body{padding:1.1rem 1.25rem}
-
 .liga-table{width:100%;border-collapse:collapse;font-size:12px}
 .liga-table th{text-align:left;font-size:10px;font-weight:700;color:var(--tx3);
-  text-transform:uppercase;letter-spacing:.07em;padding:7px 9px;
+  text-transform:uppercase;letter-spacing:.07em;padding:7px 8px;
   border-bottom:1px solid var(--bdr);background:var(--surf2)}
-.liga-table td{padding:7px 9px;border-bottom:0.5px solid var(--bdr);color:var(--tx);
+.liga-table td{padding:7px 8px;border-bottom:0.5px solid var(--bdr);color:var(--tx);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .liga-table tr:last-child td{border-bottom:none}
 .liga-table tr.ob-r{background:var(--ob-l)}
 .liga-table tr.ob-r td{color:var(--ob-dark);font-weight:600}
-.liga-table tr.div-r td{font-size:10px;color:var(--tx3);padding:3px 9px;background:var(--surf2);border-bottom:none;font-style:italic}
+.liga-table tr.div-r td{font-size:10px;color:var(--tx3);padding:3px 8px;background:var(--surf2);border-bottom:none;font-style:italic}
 .liga-table tr:hover:not(.ob-r):not(.div-r){background:#f5f9fd}
 .pos-b{width:21px;height:21px;border-radius:50%;display:inline-flex;align-items:center;
   justify-content:center;font-size:10px;font-weight:700;background:var(--surf2);color:var(--tx2)}
@@ -77,7 +79,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .fc-cell{display:flex;gap:2px}
 .fc{width:13px;height:13px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;flex-shrink:0}
 .fc-w{background:#dcfce7;color:#166534}.fc-d{background:#fef9c3;color:#854d0e}.fc-l{background:#fee2e2;color:#991b1b}
-
 .lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:.6rem}
 .note{font-size:11px;color:var(--tx3);margin-bottom:.9rem;background:var(--surf2);
   border-radius:var(--rs);padding:.55rem .8rem;line-height:1.6;border-left:3px solid var(--ob-border)}
@@ -94,37 +95,32 @@ input[type=range]{flex:1;accent-color:var(--ob-mid);cursor:pointer}
 .spin{width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
 .spin-d{width:13px;height:13px;border:2px solid var(--bdr);border-top-color:var(--tx2);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
 @keyframes sp{to{transform:rotate(360deg)}}
-
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
 .tab-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;
   border:1.5px solid var(--ob-border);background:var(--surf);color:var(--tx2);transition:all .15s}
 .tab-btn.active{background:var(--ob);color:#fff;border-color:var(--ob)}
 .tab-c{display:none}.tab-c.on{display:block}
-
 .prob-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .pn{font-size:13px;width:120px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pbg{flex:1;height:9px;background:var(--surf2);border-radius:5px;overflow:hidden}
 .pf{height:100%;border-radius:5px;transition:width .5s ease}
 .pp{font-size:12px;color:var(--tx2);min-width:42px;text-align:right;font-weight:600}
-
 .lgd{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--tx2);margin:6px 0 1rem}
 .lgd span{display:flex;align-items:center;gap:5px}
 .ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-
 footer{text-align:center;font-size:11px;color:var(--tx3);margin-top:2rem;line-height:1.9;
   padding:1.25rem;border-top:1px solid var(--bdr)}
 footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
-
 <div class="header">
   <img src="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=200" alt="OB">
   <div class="header-text">
     <h1>3F Superliga Simulator</h1>
     <p>Sæson 2026/27 · Monte Carlo · 10.000 simuleringer</p>
   </div>
-  <div class="header-status">
+  <div class="hstatus">
     <span class="dot dot-load" id="sdot"></span>
     <span id="stxt">Henter data…</span>
   </div>
@@ -149,13 +145,17 @@ footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration
     <div class="ob-m"><div class="ob-m-l">Forv. mål for</div><div class="ob-m-v" id="m-gf">—</div><div class="ob-m-s">sæsonen</div></div>
     <div class="ob-m"><div class="ob-m-l">Forv. placering</div><div class="ob-m-v" id="m-pos">—</div><div class="ob-m-s">grundspil</div></div>
     <div class="ob-m"><div class="ob-m-l">Top-6 chance</div><div class="ob-m-v" id="m-top6">—</div><div class="ob-m-s">mesterskabsspil</div></div>
-    <div class="ob-m"><div class="ob-m-l">Live form</div><div class="form-strip" id="ob-form"></div></div>
+    <div class="ob-m"><div class="ob-m-l">Seneste form</div><div class="form-strip" id="ob-form"></div></div>
+  </div>
+  <div class="ob-splits" id="ob-splits" style="display:none">
+    <div class="ob-split"><div class="ob-split-l">Hjemme</div><div class="ob-split-v" id="ob-home">—</div></div>
+    <div class="ob-split"><div class="ob-split-l">Ude</div><div class="ob-split-v" id="ob-away">—</div></div>
   </div>
   <div id="vd" class="ob-verdict"></div>
 </div>
 
 <div class="card">
-  <div class="card-hdr"><span>Forventet ligastilling 2026/27</span><small id="liga-sub">Kør simulation for at se resultater</small></div>
+  <div class="card-hdr"><span>Forventet ligastilling 2026/27</span><small id="liga-sub">Kør simulation</small></div>
   <div style="overflow-x:auto">
     <table class="liga-table" style="table-layout:fixed;width:100%">
       <thead><tr>
@@ -164,7 +164,7 @@ footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration
         <th style="width:34px">MI</th><th style="width:40px">MD</th>
         <th style="width:80px">Titelchance</th><th style="width:68px">Form</th>
       </tr></thead>
-      <tbody id="liga-tbody"><tr><td colspan="8" style="text-align:center;padding:1.5rem;color:var(--tx3);font-size:12px">Tryk "Kør simulation" for at beregne</td></tr></tbody>
+      <tbody id="liga-tbody"><tr><td colspan="8" style="text-align:center;padding:1.5rem;color:var(--tx3);font-size:12px">Tryk "Kør simulation"</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -175,7 +175,7 @@ footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration
     <span>Juster OB's parametre for 2026/27</span>
   </div>
   <div class="card-body">
-    <div class="note" id="note">Henter live data…</div>
+    <div class="note" id="note">Henter live data fra SuperStats.dk…</div>
     <div class="sr"><span class="sl">Angrebsstyrke</span><input type="range" id="s-att" min="40" max="95" value="63" step="1"><span class="sv" id="v-att">63</span></div>
     <div class="sr"><span class="sl">Forsvarsstyrke</span><input type="range" id="s-def" min="30" max="95" value="37" step="1"><span class="sv" id="v-def">37</span></div>
     <div class="sr"><span class="sl">Boldbesiddelse (%)</span><input type="range" id="s-pos" min="35" max="70" value="52" step="1"><span class="sv" id="v-pos">52</span></div>
@@ -200,7 +200,6 @@ footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration
     <div id="prob-bars" style="margin-top:.5rem"></div>
   </div>
 </div>
-
 <div id="tab-maal" class="tab-c card">
   <div class="card-body">
     <div class="lbl">Forventede mål for og imod</div>
@@ -215,7 +214,6 @@ footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration
     </div>
   </div>
 </div>
-
 <div id="tab-live" class="tab-c card">
   <div class="card-hdr"><span>Live data</span><small id="live-ts"></small></div>
   <div style="overflow-x:auto">
@@ -225,7 +223,7 @@ footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration
         <th style="width:30px">Sp</th><th style="width:30px">Pt</th>
         <th style="width:30px">MF</th><th style="width:30px">MI</th>
         <th style="width:30px">S</th><th style="width:30px">U</th><th style="width:30px">T</th>
-        <th style="width:60px">Form</th>
+        <th style="width:70px">Seneste form</th>
       </tr></thead>
       <tbody id="live-tbody"></tbody>
     </table>
@@ -233,15 +231,17 @@ footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration
 </div>
 
 <footer>
-  <p>Data: <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Danish_Superliga" target="_blank">Wikipedia — 2025–26 Danish Superliga</a> · opdateres typisk inden for timer efter en kamp</p>
+  <p>Data: <a href="https://superstats.dk" target="_blank">SuperStats.dk</a> (primær) · <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Danish_Superliga" target="_blank">Wikipedia</a> (fallback)</p>
   <p>Simulation: Monte Carlo · Poisson-fordeling · 10.000 sæsoner per kørsel</p>
   <p style="margin-top:.4rem;color:#b8cfe0">OB er de bedste 💙</p>
 </footer>
 </div>
 
 <script>
-// ── Farver & fallback ─────────────────────────────────────────────────────
-const COLORS={
+// ── Holdkort med SuperStats ID'er ────────────────────────────────────────
+const SS_IDS = {agf:13,brondby:2,fredericia:39,kobenhavn:4,midtjylland:5,
+                nordsjaelland:6,ob:7,randers:8,silkeborg:9,sonderjyske:26,vejle:10,viborg:11};
+const COLORS = {
   agf:'#639922',midtjylland:'#378ADD',sønderjyske:'#EF9F27',sonderjyske:'#EF9F27',
   brøndby:'#D85A30',brondby:'#D85A30',viborg:'#7F77DD',
   nordsjælland:'#1D9E75',nordsjaelland:'#1D9E75',
@@ -252,25 +252,25 @@ const COLORS={
 const DEF=['#639922','#378ADD','#EF9F27','#D85A30','#7F77DD','#1D9E75',
            '#888780','#003B75','#BA7517','#D4537E','#5F5E5A','#B4B2A9'];
 const FALLBACK=[
-  {name:'AGF',att:83,def:82,pos:53,color:'#639922',gf:46,ga:23,pts:50,pld:22,w:15,d:5,l:2,form:'WWDWW'},
-  {name:'Midtjylland',att:86,def:83,pos:55,color:'#378ADD',gf:58,ga:23,pts:46,pld:22,w:13,d:7,l:2,form:'WDWWD'},
-  {name:'Sønderjyske',att:67,def:71,pos:48,color:'#EF9F27',gf:34,ga:28,pts:36,pld:22,w:10,d:6,l:6,form:'WLWDW'},
-  {name:'Brøndby',att:70,def:80,pos:52,color:'#D85A30',gf:31,ga:22,pts:34,pld:22,w:10,d:4,l:8,form:'DWLWW'},
-  {name:'Viborg',att:69,def:67,pos:50,color:'#7F77DD',gf:37,ga:35,pts:33,pld:22,w:10,d:3,l:9,form:'LWWLW'},
-  {name:'Nordsjælland',att:70,def:60,pos:57,color:'#1D9E75',gf:37,ga:39,pts:31,pld:22,w:10,d:1,l:11,form:'LWLWL'},
-  {name:'Copenhagen',att:77,def:75,pos:55,color:'#888780',gf:35,ga:34,pts:29,pld:22,w:8,d:5,l:9,form:'WLDWL'},
-  {name:'OB',att:63,def:37,pos:52,color:'#003B75',gf:36,ga:46,pts:27,pld:22,w:7,d:6,l:9,form:'WLWLD'},
-  {name:'Randers',att:55,def:63,pos:47,color:'#BA7517',gf:22,ga:27,pts:26,pld:22,w:7,d:5,l:10,form:'LDWLL'},
-  {name:'Fredericia',att:59,def:49,pos:45,color:'#D4537E',gf:30,ga:49,pts:24,pld:22,w:7,d:3,l:12,form:'LLWLD'},
-  {name:'Silkeborg',att:57,def:56,pos:53,color:'#5F5E5A',gf:24,ga:45,pts:19,pld:22,w:5,d:4,l:13,form:'LLLDW'},
-  {name:'Vejle',att:49,def:47,pos:46,color:'#B4B2A9',gf:26,ga:45,pts:14,pld:22,w:3,d:5,l:14,form:'LDLLD'},
+  {name:'AGF',att:83,def:82,pos:53,color:'#639922',gf:62,ga:32,pts:67,pld:32,w:19,d:10,l:3,form:['W','W','D','W','W','W']},
+  {name:'FC Midtjylland',att:86,def:83,pos:55,color:'#378ADD',gf:72,ga:36,pts:60,pld:32,w:16,d:12,l:4,form:['W','W','D','D','D','L']},
+  {name:'FC Nordsjælland',att:70,def:62,pos:57,color:'#1D9E75',gf:51,ga:46,pts:50,pld:32,w:15,d:5,l:12,form:['W','D','L','D','D','L']},
+  {name:'Brøndby IF',att:70,def:80,pos:52,color:'#D85A30',gf:44,ga:35,pts:45,pld:32,w:13,d:6,l:13,form:['D','L','D','D','L','W']},
+  {name:'Viborg FF',att:69,def:67,pos:50,color:'#7F77DD',gf:49,ga:51,pts:44,pld:32,w:13,d:5,l:14,form:['W','D','L','D','D','D']},
+  {name:'Sønderjyske',att:67,def:71,pos:48,color:'#EF9F27',gf:44,ga:49,pts:44,pld:32,w:12,d:8,l:12,form:['D','W','W','D','D','L']},
+  {name:'F.C. København',att:77,def:75,pos:55,color:'#888780',gf:67,ga:44,pts:51,pld:32,w:15,d:6,l:11,form:['W','W','L','W','W','W']},
+  {name:'OB',att:63,def:37,pos:52,color:'#003B75',gf:51,ga:60,pts:41,pld:32,w:11,d:8,l:13,form:['D','W','D','L','W','L']},
+  {name:'Silkeborg IF',att:57,def:56,pos:53,color:'#5F5E5A',gf:41,ga:67,pts:36,pld:32,w:10,d:6,l:16,form:['L','L','W','W','W','L']},
+  {name:'Randers FC',att:55,def:63,pos:47,color:'#BA7517',gf:33,ga:47,pts:35,pld:32,w:9,d:8,l:15,form:['L','W','D','L','L','D']},
+  {name:'FC Fredericia',att:59,def:49,pos:45,color:'#D4537E',gf:45,ga:68,pts:34,pld:32,w:9,d:7,l:16,form:['L','L','W','W','L','W']},
+  {name:'Vejle BK',att:49,def:47,pos:46,color:'#B4B2A9',gf:36,ga:60,pts:24,pld:32,w:5,d:9,l:18,form:['L','L','D','L','D','L']},
 ];
 
 let TEAMS=[],OB_IDX=7,goalsChart=null;
 
 function teamColor(name,i){
   const n=name.toLowerCase().replace(/æ/g,'ae').replace(/ø/g,'o').replace(/å/g,'a')
-    .replace(/\bfc\b|\bif\b|\bff\b|\bfk\b/g,'').trim();
+    .replace(/\bfc\b|\bif\b|\bff\b|\bfk\b|\bf\.c\.\b/g,'').trim();
   const k=Object.keys(COLORS).find(k=>n.includes(k)||k.includes(n.split(' ')[0]));
   return k?COLORS[k]:DEF[i%DEF.length];
 }
@@ -280,10 +280,6 @@ function calcStr(gf,ga,pld){
   return{att:Math.min(95,Math.max(30,Math.round(20+(gf/p)*30))),
          def:Math.min(92,Math.max(28,Math.round(90-(ga/p)*26)))};
 }
-function formArr(str){
-  if(!str)return[];
-  return str.split('').filter(c=>'WDL'.includes(c.toUpperCase())).map(c=>c.toUpperCase());
-}
 function formBonus(form){
   if(!form||!form.length)return 0;
   const pts=form.slice(-5).reduce((s,r)=>s+(r==='W'?3:r==='D'?1:0),0);
@@ -291,11 +287,11 @@ function formBonus(form){
 }
 function renderFormStrip(form,id){
   const el=document.getElementById(id);if(!el)return;
-  el.innerHTML=(form||[]).slice(-5).map(r=>`<span class="fd f${r.toLowerCase()==='w'?'w':r.toLowerCase()==='d'?'draw':'l'}">${r}</span>`).join('');
+  el.innerHTML=(form||[]).map(r=>`<span class="fd f${r==='W'?'w':r==='D'?'draw':'l'}">${r}</span>`).join('');
 }
 function formCell(form){
   if(!form||!form.length)return'';
-  return`<div class="fc-cell">${form.slice(-5).map(r=>`<span class="fc fc-${r==='W'?'w':r==='D'?'d':'l'}">${r}</span>`).join('')}</div>`;
+  return`<div class="fc-cell">${form.map(r=>`<span class="fc fc-${r==='W'?'w':r==='D'?'d':'l'}">${r}</span>`).join('')}</div>`;
 }
 
 ['att','def','pos','hm','var'].forEach(id=>{
@@ -313,125 +309,186 @@ function setStatus(state,txt){
   document.getElementById('stxt').textContent=txt;
 }
 
-// ── Data sources ──────────────────────────────────────────────────────────
-
-// Source 1: TheSportsDB — free, open CORS, includes form string
-// League ID 4340 = Danish Superliga
-async function fetchTheSportsDB(){
-  const year=new Date().getFullYear();
-  const season=`${year-1}-${year}`; // e.g. 2025-2026
-  const url=`https://www.thesportsdb.com/api/v1/json/123/lookuptable.php?l=4340&s=${season}`;
-  const res=await fetch(url);
-  if(!res.ok)throw new Error('TheSportsDB '+res.status);
-  const data=await res.json();
-  const table=data?.table;
-  if(!table||!table.length)throw new Error('Ingen data fra TheSportsDB');
-  // Check we got Danish Superliga, not redirected
-  if(table[0]?.strLeague&&!table[0].strLeague.toLowerCase().includes('danish')&&
-     !table[0].strLeague.toLowerCase().includes('superliga')){
-    throw new Error('TheSportsDB returnerede forkert liga: '+table[0].strLeague);
-  }
-  return table.map((row,i)=>{
-    const gf=+row.intGoalsFor||0,ga=+row.intGoalsAgainst||0,pld=+row.intPlayed||0;
-    const {att,def}=calcStr(gf,ga,pld);
-    return{
-      name:row.strTeam,pld,gf,ga,pts:+row.intPoints||0,
-      w:+row.intWin||0,d:+row.intDraw||0,l:+row.intLoss||0,
-      att,def,pos:50,color:teamColor(row.strTeam,i),
-      form:formArr(row.strForm),badge:row.strBadge||null
-    };
-  });
-}
-
-// Source 2: Wikipedia — open CORS via origin=* parameter
-function parseWikiHTML(html){
-  const parser=new DOMParser();
-  const doc=parser.parseFromString(html,'text/html');
-  
-  // Collect teams from ALL tables - handles both regular season (12 teams)
-  // and playoff phase (two tables of 6 teams each)
-  const allTeams=[];
+// ── SuperStats.dk parser ─────────────────────────────────────────────────
+// Parses the standings table from superstats.dk/stilling/
+// Form is encoded in img alt text: "Vundet", "Uafgjort", "Tabt"
+function parseSuperstatsStilling(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const teams=[];
   const seenNames=new Set();
-  
+
+  // Find all tables and look for standings rows
   for(const table of doc.querySelectorAll('table')){
     const rows=Array.from(table.querySelectorAll('tr'));
     for(const row of rows){
+      const cells=Array.from(row.querySelectorAll('td'));
+      if(cells.length<7)continue;
+
+      // Extract text from cells
+      const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
+
+      // Position: first cell contains "#." format e.g. "1."
+      const posMatch=v[0].match(/^(\d+)\.?$/);
+      if(!posMatch)continue;
+
+      // Team name: look for anchor text in cell 2
+      const nameEl=cells[2]?.querySelector('a');
+      const name=nameEl?nameEl.textContent.trim():v[2];
+      if(!name||name.length<2||seenNames.has(name))continue;
+
+      // Stats
+      const pld=parseInt(v[3]),w=parseInt(v[4]),d=parseInt(v[5]),l=parseInt(v[6]);
+      if([pld,w,d,l].some(isNaN)||pld<1)continue;
+
+      // Goals: "62-32" format in one cell, or split across two
+      let gf=0,ga=0;
+      const goalCell=cells[7]?.textContent||'';
+      const goalMatch=goalCell.match(/(\d+)\s*[-–]\s*(\d+)/);
+      if(goalMatch){gf=parseInt(goalMatch[1]);ga=parseInt(goalMatch[2]);}
+      else{gf=parseInt(v[7])||0;ga=parseInt(v[9])||0;}
+
+      const pts=parseInt(v[9])||parseInt(v[10])||0;
+
+      // Form: parse img alt texts in last cell
+      const lastCell=cells[cells.length-1];
+      const form=Array.from(lastCell.querySelectorAll('img')).map(img=>{
+        const alt=(img.alt||img.title||'').toLowerCase();
+        if(alt.includes('vundet'))return'W';
+        if(alt.includes('uafgjort'))return'D';
+        if(alt.includes('tabt'))return'L';
+        // Also check src
+        const src=img.src||'';
+        if(src.includes('prik_w'))return'W';
+        if(src.includes('prik_d'))return'D';
+        if(src.includes('prik_l'))return'L';
+        return null;
+      }).filter(Boolean);
+
+      const {att,def}=calcStr(gf,ga,pld);
+      seenNames.add(name);
+      teams.push({name,pld,gf,ga,pts,w,d,l,att,def,pos:50,
+                  color:teamColor(name,teams.length),form});
+    }
+  }
+  if(teams.length>=6)return teams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
+  return null;
+}
+
+// Parse OB's own page for home/away splits
+function parseOBSplits(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const result={home:null,away:null,form:[]};
+  const tables=doc.querySelectorAll('table');
+  for(const table of tables){
+    const rows=Array.from(table.querySelectorAll('tr'));
+    for(const row of rows){
+      const cells=Array.from(row.querySelectorAll('td'));
+      const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
+      if(v[0]==='Hjemme'&&cells.length>=7){
+        const gm=v[6]?.match(/(\d+)\s*-\s*(\d+)/);
+        result.home=`${v[2]}K ${v[3]}S ${v[4]}U ${v[5]}T${gm?` · ${gm[1]}-${gm[2]}`:''}`;
+      }
+      if(v[0]==='Ude'&&cells.length>=7){
+        const gm=v[6]?.match(/(\d+)\s*-\s*(\d+)/);
+        result.away=`${v[2]}K ${v[3]}S ${v[4]}U ${v[5]}T${gm?` · ${gm[1]}-${gm[2]}`:''}`;
+      }
+    }
+  }
+  // Form from img alt texts
+  for(const img of doc.querySelectorAll('img')){
+    const alt=(img.alt||img.title||'').toLowerCase();
+    const src=img.src||'';
+    if(alt.includes('vundet')||src.includes('prik_w'))result.form.push('W');
+    else if(alt.includes('uafgjort')||src.includes('prik_d'))result.form.push('D');
+    else if(alt.includes('tabt')||src.includes('prik_l'))result.form.push('L');
+  }
+  return result;
+}
+
+// ── Wikipedia fallback parser ────────────────────────────────────────────
+function parseWikiHTML(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const allTeams=[],seenNames=new Set();
+  for(const table of doc.querySelectorAll('table')){
+    for(const row of table.querySelectorAll('tr')){
       const cells=Array.from(row.querySelectorAll('td, th'));
       if(cells.length<8)continue;
-      const v=cells.map(c=>c.textContent
-        .replace(/\u2212/g,'-').replace(/\[.*?\]/g,'')
-        .replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim());
-      
-      // First cell: position number 1-16
+      const v=cells.map(c=>c.textContent.replace(/\u2212/g,'-').replace(/\[.*?\]/g,'').replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim());
       const pos=parseInt(v[0]);
       if(isNaN(pos)||pos<1||pos>16)continue;
-      
-      // Second cell: team name
-      const name=v[1];
-      if(!name||name.length<2)continue;
-      if(seenNames.has(name))continue; // skip duplicates across tables
-      
-      // Find numeric stats - pld is v[2], then w,d,l,gf,ga
-      const pld=parseInt(v[2]);
-      if(isNaN(pld)||pld<1)continue;
-      
-      // Goals: try positions 6,7 first; if not numeric try 4,5
+      const name=v[1];if(!name||name.length<2||seenNames.has(name))continue;
+      const pld=parseInt(v[2]);if(isNaN(pld)||pld<1)continue;
       let gf=parseInt(v[6]),ga=parseInt(v[7]);
       if(isNaN(gf)||isNaN(ga)){gf=parseInt(v[4]);ga=parseInt(v[5]);}
       if(isNaN(gf)||isNaN(ga))continue;
-      
-      // Points: last numeric cell
       let pts=NaN;
-      for(let i=cells.length-1;i>=6;i--){
-        const n=parseInt(v[i]);
-        if(!isNaN(n)&&n>=0&&n<=150){pts=n;break;}
-      }
+      for(let i=cells.length-1;i>=6;i--){const n=parseInt(v[i]);if(!isNaN(n)&&n>=0&&n<=150){pts=n;break;}}
       if(isNaN(pts))continue;
-      
-      // wins/draws/losses
       const w=parseInt(v[3])||0,d=parseInt(v[4])||0,l=parseInt(v[5])||0;
-      
       const {att,def}=calcStr(gf,ga,pld);
       seenNames.add(name);
-      allTeams.push({name,pld,gf,ga,pts,w,d,l,att,def,pos:50,
-                     color:teamColor(name,allTeams.length),form:[]});
+      allTeams.push({name,pld,gf,ga,pts,w,d,l,att,def,pos:50,color:teamColor(name,allTeams.length),form:[]});
     }
   }
-  
-  if(allTeams.length>=6){
-    return allTeams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
-  }
+  if(allTeams.length>=6)return allTeams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
   return null;
 }
-async function fetchWikipedia(){
-  const url='https://en.wikipedia.org/w/api.php?action=parse&page=2025%E2%80%9326_Danish_Superliga&format=json&prop=text&origin=*';
-  const res=await fetch(url);
-  if(!res.ok)throw new Error('Wikipedia '+res.status);
-  const data=await res.json();
-  const html=data?.parse?.text?.['*'];
-  if(!html)throw new Error('Wikipedia tomt svar');
-  const teams=parseWikiHTML(html);
-  if(!teams||teams.length<8)throw new Error('Tabel ikke fundet');
-  return teams;
-}
 
+// ── Data loading ─────────────────────────────────────────────────────────
 async function loadData(){
   const btn=document.getElementById('ref-btn');
   btn.disabled=true;btn.innerHTML='<span class="spin-d"></span> Henter…';
-
   let teams=null,source='';
 
-  // Try Wikipedia (primary - open CORS, free, no key needed)
-  setStatus('load','Henter fra Wikipedia…');
+  // Source 1: SuperStats.dk stilling
+  setStatus('load','Henter fra SuperStats.dk…');
   try{
-    teams=await fetchWikipedia();
-    source='Wikipedia';
-    console.log('Wikipedia OK:',teams.length,'hold');
+    const res=await fetch('https://superstats.dk/stilling/');
+    if(!res.ok)throw new Error('SuperStats stilling '+res.status);
+    const html=await res.text();
+    teams=parseSuperstatsStilling(html);
+    if(!teams||teams.length<6)throw new Error('Ingen holddata fundet');
+    source='SuperStats.dk';
+    console.log('SuperStats OK:',teams.length,'hold');
+
+    // Also fetch OB's own page for home/away + detailed form
+    try{
+      const obRes=await fetch('https://superstats.dk/hold/sason?id=7&vis=overblik&aar=2025%2F2026');
+      if(obRes.ok){
+        const obHtml=await obRes.text();
+        const splits=parseOBSplits(obHtml);
+        const obIdx=teams.findIndex(t=>isOB(t.name));
+        if(obIdx>=0){
+          if(splits.form.length>0)teams[obIdx].form=splits.form.slice(-6);
+          if(splits.home){
+            document.getElementById('ob-home').textContent=splits.home;
+            document.getElementById('ob-away').textContent=splits.away||'—';
+            document.getElementById('ob-splits').style.display='grid';
+          }
+        }
+      }
+    }catch(e2){console.warn('OB splits fejl:',e2.message);}
+
   }catch(e){
-    console.warn('Wikipedia fejl:',e.message);
+    console.warn('SuperStats fejl:',e.message);
+    // Source 2: Wikipedia
+    setStatus('load','SuperStats fejlede · prøver Wikipedia…');
+    try{
+      const res=await fetch('https://en.wikipedia.org/w/api.php?action=parse&page=2025%E2%80%9326_Danish_Superliga&format=json&prop=text&origin=*');
+      if(!res.ok)throw new Error('Wikipedia '+res.status);
+      const data=await res.json();
+      const html=data?.parse?.text?.['*'];
+      if(!html)throw new Error('Tomt svar');
+      teams=parseWikiHTML(html);
+      if(!teams||teams.length<6)throw new Error('Tabel ikke fundet');
+      source='Wikipedia';
+      console.log('Wikipedia OK:',teams.length,'hold');
+    }catch(e2){
+      console.warn('Wikipedia fejl:',e2.message);
+    }
   }
 
-  if(teams&&teams.length>=8){
+  if(teams&&teams.length>=6){
     const obIdx=teams.findIndex(t=>isOB(t.name));
     if(obIdx>=0){
       TEAMS=teams;OB_IDX=obIdx;
@@ -441,23 +498,20 @@ async function loadData(){
       renderFormStrip(ob.form,'ob-form');
       const now=new Date().toLocaleString('da-DK',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
       setStatus('live',`Live · ${source} · ${now}`);
-      document.getElementById('note').textContent=
-        `Live data fra ${source} (${now}) — ${teams.length} hold · OB's styrkeværdier sat automatisk`;
+      document.getElementById('note').textContent=`Live data fra ${source} (${now}) — ${teams.length} hold hentet`;
       renderLiveTable(teams,obIdx,source+' · '+now);
-      runSim();
-      btn.disabled=false;btn.innerHTML='↻ Hent ny data';
+      runSim();btn.disabled=false;btn.innerHTML='↻ Hent ny data';
       return;
     }
   }
 
-  // All sources failed — use fallback
-  console.warn('Alle datakilder fejlede, bruger fallback');
+  // Fallback
   setStatus('err','Live data utilgængelig · bruger 2025/26-data');
-  document.getElementById('note').textContent='Ingen live data tilgængelig · Bruger FotMob 2025/26-kalibrering som udgangspunkt';
-  TEAMS=FALLBACK.map(t=>({...t,form:formArr(t.form)}));
+  document.getElementById('note').textContent='Ingen live data tilgængelig · Bruger SuperStats 2025/26-tal';
+  TEAMS=FALLBACK.map(t=>({...t}));
   OB_IDX=TEAMS.findIndex(t=>t.name==='OB');
   renderFormStrip(TEAMS[OB_IDX].form,'ob-form');
-  renderLiveTable(TEAMS,OB_IDX,'FotMob 2025/26 (offline)');
+  renderLiveTable(TEAMS,OB_IDX,'SuperStats 2025/26 (offline)');
   runSim();
   btn.disabled=false;btn.innerHTML='↻ Hent ny data';
 }
@@ -468,13 +522,13 @@ function renderLiveTable(teams,obIdx,src){
       <td>${i+1}</td><td>${t.name}${i===obIdx?' ★':''}</td>
       <td>${t.pld}</td><td><strong>${t.pts}</strong></td>
       <td>${t.gf}</td><td>${t.ga}</td>
-      <td>${t.w||'—'}</td><td>${t.d||'—'}</td><td>${t.l||'—'}</td>
+      <td>${t.w}</td><td>${t.d}</td><td>${t.l}</td>
       <td>${formCell(t.form)}</td>
     </tr>`).join('');
   document.getElementById('live-ts').textContent=src;
 }
 
-// ── Monte Carlo ────────────────────────────────────────────────────────────
+// ── Monte Carlo ───────────────────────────────────────────────────────────
 function poisson(lam){let L=Math.exp(-lam),p=1,k=0;do{k++;p*=Math.random();}while(p>L);return k-1;}
 function simMatch(ai,di,pi,aj,dj,pj,hm,vr){
   const n=()=>(Math.random()+Math.random()+Math.random()-1.5)/1.5;
@@ -489,13 +543,9 @@ function runSim(){
   const btn=document.getElementById('run-btn');
   btn.disabled=true;btn.innerHTML='<span class="spin"></span> Simulerer…';
   setTimeout(()=>{
-    const p={
-      att:+document.getElementById('s-att').value,
-      def:+document.getElementById('s-def').value,
-      pos:+document.getElementById('s-pos').value,
-      hm: +document.getElementById('s-hm').value,
-      var:+document.getElementById('s-var').value,
-    };
+    const p={att:+document.getElementById('s-att').value,def:+document.getElementById('s-def').value,
+             pos:+document.getElementById('s-pos').value,hm:+document.getElementById('s-hm').value,
+             var:+document.getElementById('s-var').value};
     const N=10000,T=TEAMS.length;
     const tw=new Array(T).fill(0),ptA=new Array(T).fill(0);
     const gfA=new Array(T).fill(0),gaA=new Array(T).fill(0);
@@ -515,8 +565,7 @@ function runSim(){
       }
       const sorted=[...Array(T).keys()].sort((a,b)=>pts[b]!==pts[a]?pts[b]-pts[a]:(gf[b]-ga[b])-(gf[a]-ga[a]));
       sorted.forEach((idx,r)=>posA[idx]+=r+1);
-      const top6=sorted.slice(0,6);
-      top6.forEach(idx=>t6A[idx]++);
+      const top6=sorted.slice(0,6);top6.forEach(idx=>t6A[idx]++);
       const cP={},cGf={},cGa={};
       top6.forEach(idx=>{cP[idx]=pts[idx];cGf[idx]=gf[idx];cGa[idx]=ga[idx];});
       for(let ii=0;ii<6;ii++) for(let jj=0;jj<6;jj++){
@@ -532,16 +581,12 @@ function runSim(){
         else cP[j]=(cP[j]||0)+3;
       }
       const champ=[...top6].sort((a,b)=>cP[b]!==cP[a]?cP[b]-cP[a]:(cGf[b]-cGa[b])-(cGf[a]-cGa[a]))[0];
-      tw[champ]++;
-      pts.forEach((v,i)=>{ptA[i]+=v;gfA[i]+=gf[i];gaA[i]+=ga[i];});
+      tw[champ]++;pts.forEach((v,i)=>{ptA[i]+=v;gfA[i]+=gf[i];gaA[i]+=ga[i];});
     }
 
-    const tp=tw.map(w=>w/N*100);
-    const avgPt=ptA.map(v=>(v/N).toFixed(1));
-    const avgGf=gfA.map(v=>Math.round(v/N));
-    const avgGa=gaA.map(v=>Math.round(v/N));
-    const avgPos=posA.map(v=>(v/N).toFixed(1));
-    const t6p=t6A.map(v=>(v/N*100).toFixed(1));
+    const tp=tw.map(w=>w/N*100),avgPt=ptA.map(v=>(v/N).toFixed(1));
+    const avgGf=gfA.map(v=>Math.round(v/N)),avgGa=gaA.map(v=>Math.round(v/N));
+    const avgPos=posA.map(v=>(v/N).toFixed(1)),t6p=t6A.map(v=>(v/N*100).toFixed(1));
 
     document.getElementById('ob-pct').textContent=tp[OB_IDX].toFixed(1)+'%';
     document.getElementById('m-pts').textContent=Math.round(parseFloat(avgPt[OB_IDX]));
@@ -554,11 +599,10 @@ function runSim(){
     if(tp[OB_IDX]>12){vd.innerHTML='💙 <strong>OB er titelkandidat!</strong> Det her er det Zorniger drømmer om.';}
     else if(tp[OB_IDX]>4){vd.innerHTML='💙 <strong>OB er med i kampen.</strong> Top-6 i '+t6p[OB_IDX]+'% af simuleringer.';}
     else if(obPos<=6){vd.innerHTML='⚡ <strong>OB når typisk mesterskabsslutspillet</strong> ('+t6p[OB_IDX]+'%), men titlen kræver stærkere forsvar end '+p.def+'.';}
-    else{vd.innerHTML='⚠️ <strong>OB ender sandsynligvis i nedrykningsspillet igen.</strong> Forsvar på '+p.def+' er for svagt — skru op og se hvad der skal til.';}
+    else{vd.innerHTML='⚠️ <strong>OB ender sandsynligvis i nedrykningsspillet igen.</strong> Forsvar på '+p.def+' er for svagt.';}
 
     const byPts=[...Array(T).keys()].sort((a,b)=>parseFloat(avgPt[b])-parseFloat(avgPt[a]));
-    const maxTP=Math.max(...tp);
-    let divDone=false;
+    const maxTP=Math.max(...tp);let divDone=false;
     document.getElementById('liga-tbody').innerHTML=byPts.map((idx,rank)=>{
       let div='';
       if(rank===6&&!divDone){divDone=true;div=`<tr class="div-r"><td colspan="8">── Nedrykningsspil ──</td></tr>`;}
@@ -598,7 +642,6 @@ function runSim(){
         scales:{x:{ticks:{autoSkip:false,maxRotation:45,font:{size:11}}},
                 y:{title:{display:true,text:'Forventede mål (sæson)',font:{size:11}}}}}
     });
-
     btn.disabled=false;btn.innerHTML='↺ Kør ny simulation';
   },30);
 }
