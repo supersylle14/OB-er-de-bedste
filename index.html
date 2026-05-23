@@ -2,6 +2,12 @@
 <html lang="da">
 <head>
 <meta charset="UTF-8">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OB Simulator">
+<link rel="apple-touch-icon" href="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=180">
+<meta name="theme-color" content="#003B75">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OB — Superliga Analyse & Forudsigelse</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -15,10 +21,11 @@
   --gold:#f59e0b;--silver:#94a3b8;--bronze:#b45309;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;min-height:100vh}
+  background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;min-height:100vh;
+  padding-bottom:env(safe-area-inset-bottom)}
 
 /* Header */
-.header{background:var(--ob);padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.header{background:var(--ob);padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
 .header img{height:44px;width:auto;flex-shrink:0}
 .header-text h1{font-size:17px;font-weight:700;color:#fff;margin-bottom:1px}
 .header-text p{font-size:11px;color:rgba(255,255,255,.55)}
@@ -37,7 +44,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   border-right:1px solid var(--bdr)}
 .season-tab:last-child{border-right:none}
 .season-tab.active{background:var(--ob);color:#fff}
-.season-tab .tab-year{display:block;font-size:16px;font-weight:700;margin-bottom:2px}
+.season-tab .tab-year{display:block;font-size:15px;font-weight:700;margin-bottom:1px}
 .season-tab .tab-label{display:block;font-size:10px;opacity:.7;text-transform:uppercase;letter-spacing:.05em}
 .season-content{display:none}.season-content.on{display:block}
 
@@ -51,7 +58,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .ob-badge{margin-left:auto;text-align:right}
 .ob-badge-lbl{font-size:11px;opacity:.6}
 .ob-badge-val{font-size:28px;font-weight:800;line-height:1}
-.ob-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:.75rem}
+.ob-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:.75rem}
 .ob-m{background:rgba(255,255,255,.13);border-radius:var(--rs);padding:.6rem .85rem}
 .ob-m-l{font-size:10px;opacity:.6;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em}
 .ob-m-v{font-size:17px;font-weight:700}
@@ -72,7 +79,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .card-body{padding:1.1rem 1.25rem}
 
 /* Liga table */
-.liga-table{width:100%;border-collapse:collapse;font-size:12px}
+.liga-table{width:100%;border-collapse:collapse;font-size:12px;min-width:0}
 .liga-table th{text-align:left;font-size:10px;font-weight:700;color:var(--tx3);
   text-transform:uppercase;letter-spacing:.07em;padding:7px 8px;
   border-bottom:1px solid var(--bdr);background:var(--surf2)}
@@ -103,20 +110,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .pred-title{font-size:13px;font-weight:600;opacity:.7;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
 .pred-pos{font-size:52px;font-weight:800;line-height:1;margin-bottom:.25rem}
 .pred-pos-lbl{font-size:14px;opacity:.7}
-.pred-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:1rem}
+.pred-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:1rem}
 .pred-m{background:rgba(255,255,255,.12);border-radius:var(--rs);padding:.6rem .85rem}
 .pred-m-l{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
 .pred-m-v{font-size:17px;font-weight:700}
 
 /* Prob bars */
 .prob-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.pn{font-size:13px;width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pn{font-size:13px;width:110px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pbg{flex:1;height:9px;background:var(--surf2);border-radius:5px;overflow:hidden}
 .pf{height:100%;border-radius:5px;transition:width .6s ease}
 .pp{font-size:12px;color:var(--tx2);min-width:42px;text-align:right;font-weight:600}
 
 /* Insight cards */
-.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1rem}
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1rem}
 .insight{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rs);padding:1rem}
 .insight-icon{font-size:24px;margin-bottom:.5rem}
 .insight-title{font-size:12px;font-weight:700;color:var(--ob);margin-bottom:.25rem}
@@ -148,6 +155,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 footer{text-align:center;font-size:11px;color:var(--tx3);margin-top:2rem;line-height:1.9;
   padding:1.25rem;border-top:1px solid var(--bdr)}
 footer a{color:var(--ob-mid);text-decoration:none}
+
+@media(max-width:500px){
+  .header{padding:.75rem 1rem;gap:.75rem}
+  .header img{height:36px}
+  .header-text h1{font-size:14px}
+  .season-tab{padding:.65rem .5rem}
+  .season-tab .tab-year{font-size:13px}
+  .ob-metrics{grid-template-columns:repeat(3,1fr)}
+  .pred-metrics{grid-template-columns:repeat(2,1fr)}
+  .insight-grid{grid-template-columns:1fr}
+  .pred-pos{font-size:38px}
+  .liga-table{font-size:11px}
+  .liga-table td,.liga-table th{padding:5px 5px}
+  .pn{width:90px;font-size:12px}
+  .inner-tabs{gap:4px}
+  .inner-tab{padding:4px 10px;font-size:11px}
+  .wrap{padding:1rem .75rem 2rem}
+  .card-body{padding:.85rem 1rem}
+  .ob-hero{padding:1rem}
+  .pred-hero{padding:1rem}
+}
+@media(max-width:360px){
+  .ob-metrics{grid-template-columns:repeat(2,1fr)}
+  .season-tabs{flex-direction:column}
+  .season-tab{border-right:none;border-bottom:1px solid var(--bdr)}
+}
+
+@supports(-webkit-touch-callout:none){
+  .header{padding-top:max(1rem,env(safe-area-inset-top));
+    padding-left:max(1.5rem,env(safe-area-inset-left));
+    padding-right:max(1.5rem,env(safe-area-inset-right))}
+  .wrap{padding-left:max(1rem,env(safe-area-inset-left));
+    padding-right:max(1rem,env(safe-area-inset-right))}
+}
 </style>
 </head>
 <body>
