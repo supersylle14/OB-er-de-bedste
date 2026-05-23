@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="OB Fodbold">
 <link rel="apple-touch-icon" href="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=180">
 <meta name="theme-color" content="#003B75">
-<title>OB Fodbold — Sæson 2025/26 & Forudsigelse</title>
+<title>OB Fodbold</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -21,15 +21,13 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;min-height:100vh;
   padding-bottom:env(safe-area-inset-bottom)}
-
-/* Header */
 .header{background:var(--ob);padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;
   flex-wrap:wrap;position:sticky;top:0;z-index:100;
   padding-top:max(1rem,env(safe-area-inset-top))}
-.header img{height:44px;width:auto;flex-shrink:0}
+.header img{height:42px;width:auto;flex-shrink:0}
 .header-text h1{font-size:17px;font-weight:700;color:#fff;margin-bottom:1px}
-.header-text p{font-size:11px;color:rgba(255,255,255,.55)}
-.hstatus{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,.65)}
+.header-text p{font-size:11px;color:rgba(255,255,255,.5)}
+.hstatus{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:11px;color:rgba(255,255,255,.6)}
 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .dot-live{background:#4ade80;animation:pulse 2s ease-in-out infinite}
 .dot-err{background:#f87171}.dot-load{background:#fbbf24}
@@ -37,62 +35,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 
 .wrap{max-width:920px;margin:0 auto;padding:1.25rem 1rem 3rem}
 
-/* Main tabs */
-.main-tabs{display:flex;gap:0;margin-bottom:1.25rem;background:var(--surf);
-  border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}
-.main-tab{flex:1;padding:.8rem .5rem;font-size:12px;font-weight:600;cursor:pointer;
-  border:none;background:transparent;color:var(--tx2);transition:all .2s;text-align:center;
-  border-right:1px solid var(--bdr)}
-.main-tab:last-child{border-right:none}
-.main-tab.active{background:var(--ob);color:#fff}
-.main-tab .ty{display:block;font-size:15px;font-weight:700;margin-bottom:1px}
-.main-tab .tl{display:block;font-size:10px;opacity:.7;text-transform:uppercase;letter-spacing:.04em}
-.main-content{display:none}.main-content.on{display:block}
+/* Sæson switcher — stor og tydelig */
+.season-switcher{display:flex;gap:0;margin-bottom:1.5rem;border-radius:var(--r);overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,59,117,.15)}
+.ss-btn{flex:1;padding:1.1rem 1rem;text-align:center;cursor:pointer;border:none;
+  background:var(--surf);color:var(--tx2);transition:all .2s;border-right:1px solid var(--bdr)}
+.ss-btn:last-child{border-right:none}
+.ss-btn.active{background:var(--ob);color:#fff}
+.ss-btn .ss-year{display:block;font-size:22px;font-weight:800;line-height:1;margin-bottom:3px}
+.ss-btn .ss-label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+.ss-btn.active .ss-label{opacity:.8}
+.season{display:none}.season.on{display:block}
 
-/* OB Hero */
+/* Sub tabs (Superliga / Pokalen / OB-stats) */
+.sub-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.sub-tab{padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;
+  border:1.5px solid var(--ob-border);background:var(--surf);color:var(--tx2);transition:all .15s}
+.sub-tab.active{background:var(--ob);color:#fff;border-color:var(--ob)}
+.sub-c{display:none}.sub-c.on{display:block}
+
+/* OB hero */
 .ob-hero{background:linear-gradient(135deg,var(--ob) 0%,var(--ob-mid) 100%);
-  border-radius:var(--r);padding:1.4rem;margin-bottom:1rem;color:#fff;overflow:hidden;position:relative}
-.ob-hero::after{content:'💙';position:absolute;right:1.2rem;bottom:.8rem;font-size:48px;opacity:.15;pointer-events:none}
-.ob-top{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
-.ob-logo{height:48px;filter:brightness(0) invert(1);opacity:.92}
-.ob-name{flex:1}
-.ob-name h2{font-size:18px;font-weight:800}
-.ob-name p{font-size:11px;opacity:.6;margin-top:1px}
+  border-radius:var(--r);padding:1.3rem;margin-bottom:1rem;color:#fff;overflow:hidden;position:relative}
+.ob-hero::after{content:'💙';position:absolute;right:1rem;bottom:.5rem;font-size:52px;opacity:.12;pointer-events:none}
+.ob-top{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem;flex-wrap:wrap}
+.ob-logo{height:46px;filter:brightness(0) invert(1);opacity:.92}
+.ob-info{flex:1}
+.ob-info h2{font-size:17px;font-weight:800}
+.ob-info p{font-size:11px;opacity:.6;margin-top:1px}
 .ob-badge{text-align:right}
-.ob-badge-lbl{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.05em}
-.ob-badge-val{font-size:32px;font-weight:800;line-height:1}
-.ob-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
-.ob-s{background:rgba(255,255,255,.13);border-radius:var(--rs);padding:.55rem .8rem}
-.ob-s-l{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
-.ob-s-v{font-size:17px;font-weight:700}
-.ob-s-sub{font-size:10px;opacity:.45;margin-top:1px}
-.verdict{background:rgba(255,255,255,.14);border-left:3px solid rgba(255,255,255,.4);
-  border-radius:0 var(--rs) var(--rs) 0;padding:.75rem 1rem;font-size:13px;line-height:1.6;margin-top:.85rem}
-.form-strip{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
-.fd{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
-.fw{background:rgba(74,222,128,.25);color:#86efac}
-.fdraw{background:rgba(251,191,36,.2);color:#fde68a}
-.fl{background:rgba(248,113,113,.2);color:#fca5a5}
+.ob-badge-l{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.05em}
+.ob-badge-v{font-size:30px;font-weight:800;line-height:1}
+.ob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:7px}
+.ob-stat{background:rgba(255,255,255,.13);border-radius:var(--rs);padding:.55rem .8rem}
+.ob-stat-l{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.ob-stat-v{font-size:16px;font-weight:700}
+.ob-stat-s{font-size:10px;opacity:.45;margin-top:1px}
+.ob-verdict{background:rgba(255,255,255,.13);border-left:3px solid rgba(255,255,255,.4);
+  border-radius:0 var(--rs) var(--rs) 0;padding:.7rem 1rem;font-size:13px;line-height:1.6;margin-top:.85rem}
+
+/* Pred hero */
+.pred-hero{background:linear-gradient(135deg,#0d2a4a 0%,var(--ob-mid) 100%);
+  border-radius:var(--r);padding:1.3rem;margin-bottom:1rem;color:#fff;overflow:hidden;position:relative}
+.pred-hero::after{content:'🔮';position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);font-size:70px;opacity:.12;pointer-events:none}
+.pred-label{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.pred-pos{font-size:50px;font-weight:800;line-height:1}
+.pred-sub{font-size:12px;opacity:.6;margin-top:.2rem;margin-bottom:.9rem}
+.pred-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:7px}
+.pred-m{background:rgba(255,255,255,.12);border-radius:var(--rs);padding:.55rem .8rem}
+.pred-m-l{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.pred-m-v{font-size:16px;font-weight:700}
+
+/* Coming soon */
+.coming-soon{background:var(--surf);border:1.5px dashed var(--ob-border);border-radius:var(--r);
+  padding:2.5rem 1.5rem;text-align:center;color:var(--tx3);margin-bottom:1rem}
+.coming-soon .cs-icon{font-size:48px;margin-bottom:.75rem;opacity:.6}
+.coming-soon h3{font-size:16px;font-weight:700;color:var(--ob);margin-bottom:.4rem}
+.coming-soon p{font-size:13px;line-height:1.6;max-width:360px;margin:0 auto}
+.coming-soon .cs-date{display:inline-block;background:var(--ob-l);color:var(--ob);
+  border-radius:var(--rs);padding:4px 12px;font-size:12px;font-weight:700;margin-top:.75rem}
 
 /* Cards */
 .card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:1rem;overflow:hidden}
-.card-hdr{background:var(--ob);padding:.6rem 1.1rem;display:flex;align-items:center;gap:.5rem}
+.card-hdr{background:var(--ob);padding:.6rem 1.1rem;display:flex;align-items:center}
 .card-hdr span{font-size:13px;font-weight:600;color:#fff}
 .card-hdr small{font-size:11px;color:rgba(255,255,255,.5);margin-left:auto}
 .card-body{padding:1rem 1.1rem}
-
-/* Kamp liste */
-.kamp-list{list-style:none}
-.kamp{display:flex;align-items:center;gap:10px;padding:.65rem 1.1rem;border-bottom:.5px solid var(--bdr);font-size:13px}
-.kamp:last-child{border-bottom:none}
-.kamp-dato{font-size:11px;color:var(--tx3);width:60px;flex-shrink:0}
-.kamp-hold{flex:1;font-weight:500}
-.kamp-hold em{font-style:normal;font-size:11px;color:var(--tx3);margin-left:4px}
-.kamp-res{font-size:13px;font-weight:700;min-width:40px;text-align:center;padding:2px 8px;border-radius:4px}
-.res-w{background:#EAF3DE;color:#3B6D11}
-.res-d{background:#FEF9C7;color:#854d0e}
-.res-l{background:#FEE2E2;color:#991b1b}
-.kamp-tur{font-size:10px;color:var(--tx3);width:55px;text-align:right;flex-shrink:0}
 
 /* Liga table */
 .liga-table{width:100%;border-collapse:collapse;font-size:12px}
@@ -119,32 +127,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .fc{width:13px;height:13px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;flex-shrink:0}
 .fc-w{background:#dcfce7;color:#166534}.fc-d{background:#fef9c3;color:#854d0e}.fc-l{background:#fee2e2;color:#991b1b}
 
-/* Spillertrup */
-.squad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.squad-player{background:var(--surf2);border-radius:var(--rs);padding:.6rem .8rem;font-size:12px}
-.squad-nr{font-size:10px;color:var(--tx3);margin-bottom:1px}
-.squad-name{font-weight:600;color:var(--tx)}
-.squad-pos{font-size:10px;color:var(--ob-mid);margin-top:1px}
-
-/* Prediction */
-.pred-hero{background:linear-gradient(135deg,#1a3a5c 0%,var(--ob-mid) 100%);
-  border-radius:var(--r);padding:1.4rem;margin-bottom:1rem;color:#fff;position:relative;overflow:hidden}
-.pred-hero::before{content:'🔮';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:80px;opacity:.1}
-.pred-label{font-size:11px;opacity:.65;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
-.pred-pos{font-size:52px;font-weight:800;line-height:1}
-.pred-sub{font-size:13px;opacity:.65;margin-top:.2rem}
-.pred-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:1rem}
-.pred-m{background:rgba(255,255,255,.12);border-radius:var(--rs);padding:.55rem .8rem}
-.pred-m-l{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
-.pred-m-v{font-size:17px;font-weight:700}
-
-/* Insight */
-.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:1rem}
-.insight{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rs);padding:.9rem 1rem}
-.insight-icon{font-size:22px;margin-bottom:.4rem}
-.insight-title{font-size:12px;font-weight:700;color:var(--ob);margin-bottom:.2rem}
-.insight-text{font-size:12px;color:var(--tx2);line-height:1.5}
-
 /* Prob bars */
 .prob-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .pn{font-size:13px;width:110px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -152,64 +134,70 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 .pf{height:100%;border-radius:5px;transition:width .6s ease}
 .pp{font-size:12px;color:var(--tx2);min-width:42px;text-align:right;font-weight:600}
 
-/* Inner tabs */
-.inner-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
-.inner-tab{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;
-  border:1.5px solid var(--ob-border);background:var(--surf);color:var(--tx2);transition:all .15s}
-.inner-tab.active{background:var(--ob);color:#fff;border-color:var(--ob)}
-.inner-c{display:none}.inner-c.on{display:block}
+/* Insight grid */
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:1rem}
+.insight{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rs);padding:.9rem 1rem}
+.insight-icon{font-size:22px;margin-bottom:.3rem}
+.insight-title{font-size:12px;font-weight:700;color:var(--ob);margin-bottom:.2rem}
+.insight-text{font-size:12px;color:var(--tx2);line-height:1.5}
 
-/* Refresh */
-.refresh-btn{width:100%;padding:.75rem;font-size:13px;font-weight:600;cursor:pointer;
+/* Kamp list */
+.kamp-list{list-style:none}
+.kamp{display:flex;align-items:center;gap:8px;padding:.6rem 1rem;border-bottom:.5px solid var(--bdr);font-size:13px}
+.kamp:last-child{border-bottom:none}
+.kamp-dato{font-size:11px;color:var(--tx3);width:55px;flex-shrink:0}
+.kamp-hold{flex:1;font-weight:500}
+.kamp-hold em{font-style:normal;font-size:11px;color:var(--tx3);margin-left:4px}
+.kamp-res{font-weight:700;padding:2px 8px;border-radius:4px;font-size:12px;min-width:36px;text-align:center}
+.res-w{background:#EAF3DE;color:#3B6D11}
+.res-d{background:#FEF9C7;color:#854d0e}
+.res-l{background:#FEE2E2;color:#991b1b}
+.kamp-tur{font-size:10px;color:var(--tx3);width:50px;text-align:right;flex-shrink:0}
+
+/* Pokal */
+.pokal-runde-titel{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;
+  letter-spacing:.07em;padding:.6rem 1rem .3rem;background:var(--surf2)}
+.pokal-kamp{display:flex;align-items:center;gap:8px;padding:.6rem 1rem;
+  border-bottom:.5px solid var(--bdr);font-size:13px}
+.pokal-kamp.ob-match{background:var(--ob-l)}
+.pokal-kamp:last-child{border-bottom:none}
+
+/* Refresh btn */
+.refresh-btn{width:100%;padding:.7rem;font-size:13px;font-weight:600;cursor:pointer;
   border-radius:var(--rs);border:1.5px solid var(--ob-border);background:var(--surf2);
   color:var(--ob);display:flex;align-items:center;justify-content:center;gap:7px;
   transition:all .15s;margin-bottom:1rem}
 .refresh-btn:hover{background:var(--ob-l)}.refresh-btn:disabled{opacity:.5;cursor:not-allowed}
-.spin-d{width:13px;height:13px;border:2px solid var(--ob-border);border-top-color:var(--ob);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+.spin-d{width:13px;height:13px;border:2px solid var(--ob-border);border-top-color:var(--ob);border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:.6rem}
-.lgd{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--tx2);margin:4px 0 .9rem}
-.lgd span{display:flex;align-items:center;gap:5px}
+.lgd{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--tx2);margin:4px 0 .9rem}
+.lgd span{display:flex;align-items:center;gap:4px}
 .ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-
-/* Pokal bracket */
-.pokal-runde{margin-bottom:1.1rem}
-.pokal-runde-titel{font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;
-  letter-spacing:.07em;margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--bdr)}
-.pokal-kamp{display:flex;align-items:center;gap:10px;padding:.55rem .9rem;
-  background:var(--surf2);border-radius:var(--rs);margin-bottom:6px;font-size:13px}
-.pokal-kamp.ob-match{background:var(--ob-l);border-left:3px solid var(--ob)}
-.pk-dato{font-size:11px;color:var(--tx3);width:55px;flex-shrink:0}
-.pk-hold{flex:1;font-weight:500}
-.pk-res{font-weight:700;padding:2px 8px;border-radius:4px;font-size:13px}
-.pk-ud{font-size:10px;color:var(--tx3);width:50px;text-align:right}
 
 footer{text-align:center;font-size:11px;color:var(--tx3);margin-top:2rem;line-height:1.9;
   padding:1.25rem;border-top:1px solid var(--bdr)}
 footer a{color:var(--ob-mid);text-decoration:none}
 
 @media(max-width:500px){
-  .header{padding:.75rem 1rem}
-  .header img{height:36px}
+  .header{padding:.7rem 1rem}
+  .header img{height:34px}
   .header-text h1{font-size:14px}
-  .main-tab .ty{font-size:13px}
-  .main-tab .tl{font-size:9px}
-  .ob-stats{grid-template-columns:repeat(3,1fr)}
-  .pred-metrics{grid-template-columns:repeat(2,1fr)}
+  .ss-btn .ss-year{font-size:18px}
+  .ob-grid,.pred-grid{grid-template-columns:repeat(3,1fr)}
   .insight-grid{grid-template-columns:1fr 1fr}
-  .pred-pos{font-size:38px}
+  .pred-pos{font-size:40px}
   .liga-table{font-size:11px}
   .liga-table td,.liga-table th{padding:5px 5px}
-  .squad-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
   .wrap{padding:1rem .75rem 2rem}
   .card-body{padding:.8rem .9rem}
   .pn{width:90px;font-size:12px}
+  .sub-tab{padding:5px 12px;font-size:12px}
 }
 @media(max-width:360px){
-  .ob-stats{grid-template-columns:repeat(2,1fr)}
+  .ob-grid,.pred-grid{grid-template-columns:repeat(2,1fr)}
   .insight-grid{grid-template-columns:1fr}
-  .main-tabs{flex-wrap:wrap}
-  .main-tab{min-width:50%}
+  .season-switcher{flex-direction:column}
 }
 @supports(-webkit-touch-callout:none){
   .wrap{padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
@@ -222,7 +210,7 @@ footer a{color:var(--ob-mid);text-decoration:none}
   <img src="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=200" alt="OB">
   <div class="header-text">
     <h1>OB Fodbold</h1>
-    <p>Odense Boldklub · Sæson 2025/26 & Forudsigelse 2026/27</p>
+    <p>Odense Boldklub</p>
   </div>
   <div class="hstatus">
     <span class="dot dot-load" id="sdot"></span>
@@ -232,280 +220,362 @@ footer a{color:var(--ob-mid);text-decoration:none}
 
 <div class="wrap">
 
-<!-- Main tabs -->
-<div class="main-tabs">
-  <button class="main-tab active" onclick="mainTab('ob',this)">
-    <span class="ty">OB</span>
-    <span class="tl">Sæson 2025/26</span>
+<!-- Sæson switcher -->
+<div class="season-switcher">
+  <button class="ss-btn active" onclick="switchSeason('2526',this)">
+    <span class="ss-year">2025/26</span>
+    <span class="ss-label">Afsluttet sæson</span>
   </button>
-  <button class="main-tab" onclick="mainTab('pokal',this)">
-    <span class="ty">🏆 Pokalen</span>
-    <span class="tl">DBU Pokalen</span>
-  </button>
-  <button class="main-tab" onclick="mainTab('liga',this)">
-    <span class="ty">Ligaen</span>
-    <span class="tl">Superliga stilling</span>
-  </button>
-  <button class="main-tab" onclick="mainTab('pred',this)">
-    <span class="ty">2026/27</span>
-    <span class="tl">Forudsigelse</span>
+  <button class="ss-btn" onclick="switchSeason('2627',this)">
+    <span class="ss-year">2026/27</span>
+    <span class="ss-label">Kommende sæson</span>
   </button>
 </div>
 
-<!-- ══ OB SÆSON ══ -->
-<div id="tab-ob" class="main-content on">
-  <div class="ob-hero">
-    <div class="ob-top">
-      <img class="ob-logo" src="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=200" alt="OB">
-      <div class="ob-name">
-        <h2>Odense Boldklub</h2>
-        <p>Træner: Alexander Zorniger · Kaptajn: Rasmus Falk</p>
-      </div>
-      <div class="ob-badge">
-        <div class="ob-badge-lbl">Placering</div>
-        <div class="ob-badge-val" id="ob-rank">—</div>
-      </div>
-    </div>
-    <div class="ob-stats">
-      <div class="ob-s"><div class="ob-s-l">Kampe</div><div class="ob-s-v" id="ob-pld">—</div></div>
-      <div class="ob-s"><div class="ob-s-l">Point</div><div class="ob-s-v" id="ob-pts">—</div></div>
-      <div class="ob-s"><div class="ob-s-l">Mål for</div><div class="ob-s-v" id="ob-gf">—</div></div>
-      <div class="ob-s"><div class="ob-s-l">Mål imod</div><div class="ob-s-v" id="ob-ga">—</div></div>
-      <div class="ob-s"><div class="ob-s-l">S · U · T</div><div class="ob-s-v" id="ob-wdl">—</div></div>
-      <div class="ob-s"><div class="ob-s-l">Topscorer</div><div class="ob-s-v" style="font-size:13px">Noah Ganaus</div><div class="ob-s-sub">9 ligamål</div></div>
-    </div>
-    <div id="ob-verdict" class="verdict">Henter sæsondata…</div>
+<!-- ══════════════════════════════════════════════════
+     SÆSON 2025/26
+══════════════════════════════════════════════════ -->
+<div id="s-2526" class="season on">
+
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="subTab('2526','ob',this)">OB Stats</button>
+    <button class="sub-tab" onclick="subTab('2526','liga',this)">Superliga</button>
+    <button class="sub-tab" onclick="subTab('2526','pokal',this)">DBU Pokalen</button>
+    <button class="sub-tab" onclick="subTab('2526','avanceret',this)">📊 Avanceret</button>
   </div>
 
-  <button class="refresh-btn" id="refresh-btn" onclick="loadData()">↻ Opdater med nyeste data</button>
+  <!-- OB Stats 2526 -->
+  <div id="t2526-ob" class="sub-c on">
+    <div class="ob-hero">
+      <div class="ob-top">
+        <img class="ob-logo" src="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=200" alt="OB">
+        <div class="ob-info">
+          <h2>Odense Boldklub</h2>
+          <p>Træner: Zorniger · Kaptajn: Rasmus Falk</p>
+        </div>
+        <div class="ob-badge">
+          <div class="ob-badge-l">Placering</div>
+          <div class="ob-badge-v" id="ob-rank">—</div>
+        </div>
+      </div>
+      <div class="ob-grid">
+        <div class="ob-stat"><div class="ob-stat-l">Kampe</div><div class="ob-stat-v" id="ob-pld">—</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Point</div><div class="ob-stat-v" id="ob-pts">—</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Mål for</div><div class="ob-stat-v" id="ob-gf">—</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Mål imod</div><div class="ob-stat-v" id="ob-ga">—</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">S · U · T</div><div class="ob-stat-v" id="ob-wdl">—</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Topscorer</div><div class="ob-stat-v" style="font-size:13px">Noah Ganaus</div><div class="ob-stat-s">9 mål</div></div>
+      </div>
+      <div class="ob-verdict" id="ob-verdict">Henter sæsondata…</div>
+    </div>
 
-  <div class="inner-tabs">
-    <button class="inner-tab active" onclick="innerTab('a','form',this)">Seneste form</button>
-    <button class="inner-tab" onclick="innerTab('a','spillere',this)">Spillertrup</button>
-    <button class="inner-tab" onclick="innerTab('a','analyse',this)">Sæsonanalyse</button>
-  </div>
+    <button class="refresh-btn" id="rb1" onclick="loadData()">↻ Opdater med nyeste data</button>
 
-  <div id="a-form" class="inner-c on">
+    <div class="insight-grid">
+      <div class="insight"><div class="insight-icon">⚽</div><div class="insight-title">Angreb</div><div class="insight-text" id="ins-att">—</div></div>
+      <div class="insight"><div class="insight-icon">🛡️</div><div class="insight-title">Forsvar</div><div class="insight-text" id="ins-def">—</div></div>
+      <div class="insight"><div class="insight-icon">📊</div><div class="insight-title">Sæsonbalance</div><div class="insight-text" id="ins-bal">—</div></div>
+      <div class="insight"><div class="insight-icon">🔄</div><div class="insight-title">Comeback</div><div class="insight-text">OB rykkede ned i 2024, vandt 1. division i 2024/25 og vendte tilbage til Superligaen — historisk!</div></div>
+    </div>
+
     <div class="card">
-      <div class="card-hdr"><span>OB — Seneste kampe</span><small id="form-ts"></small></div>
-      <ul class="kamp-list" id="kamp-list">
-        <!-- Hardkodet da Wikipedia OB-sæsonside har kampdata -->
-        <li class="kamp"><span class="kamp-dato">17. maj</span><span class="kamp-hold">OB vs Vejle BK <em>Hjemme</em></span><span class="kamp-res res-l">0–1</span><span class="kamp-tur">Superliga</span></li>
-        <li class="kamp"><span class="kamp-dato">11. maj</span><span class="kamp-hold">Randers FC vs OB <em>Ude</em></span><span class="kamp-res res-d">2–2</span><span class="kamp-tur">Superliga</span></li>
-        <li class="kamp"><span class="kamp-dato">3. maj</span><span class="kamp-hold">OB vs Silkeborg <em>Hjemme</em></span><span class="kamp-res res-w">2–0</span><span class="kamp-tur">Superliga</span></li>
-        <li class="kamp"><span class="kamp-dato">26. apr</span><span class="kamp-hold">FC Fredericia vs OB <em>Ude</em></span><span class="kamp-res res-w">0–2</span><span class="kamp-tur">Superliga</span></li>
-        <li class="kamp"><span class="kamp-dato">22. apr</span><span class="kamp-hold">F.C. København vs OB <em>Ude</em></span><span class="kamp-res res-w">1–2</span><span class="kamp-tur">Superliga</span></li>
-        <li class="kamp"><span class="kamp-dato">15. mar</span><span class="kamp-hold">OB vs F.C. København <em>Hjemme</em></span><span class="kamp-res res-w">2–1</span><span class="kamp-tur">Superliga</span></li>
-        <li class="kamp"><span class="kamp-dato">13. mar</span><span class="kamp-hold">OB vs Randers FC <em>Hjemme</em></span><span class="kamp-res res-d">0–0</span><span class="kamp-tur">Superliga</span></li>
+      <div class="card-hdr"><span>⚽ Topscorere OB 2025/26</span><small>SuperStats.dk</small></div>
+      <ul class="kamp-list">
+        <li class="kamp"><span style="width:24px;font-weight:700;color:var(--ob)">#1</span><span class="kamp-hold">Noah Ganaus</span><span class="kamp-res res-w">11 mål</span><span class="kamp-tur">30 kampe</span></li>
+        <li class="kamp"><span style="width:24px;font-weight:700;color:var(--ob)">#2</span><span class="kamp-hold">Fiete Arp</span><span class="kamp-res res-d">9 mål</span><span class="kamp-tur">28 kampe</span></li>
+        <li class="kamp"><span style="width:24px;font-weight:700;color:var(--ob)">#3</span><span class="kamp-hold">Jay-Roy Grot</span><span class="kamp-res res-d">7 mål</span><span class="kamp-tur">29 kampe</span></li>
+        <li class="kamp"><span style="width:24px;color:var(--tx3)">#4</span><span class="kamp-hold">Jona Niemiec</span><span style="font-size:12px;padding:2px 8px;border-radius:4px;background:var(--surf2)">4 mål</span><span class="kamp-tur">20 kampe</span></li>
+        <li class="kamp"><span style="width:24px;color:var(--tx3)">#5</span><span class="kamp-hold">Rasmus Falk</span><span style="font-size:12px;padding:2px 8px;border-radius:4px;background:var(--surf2)">3 mål</span><span class="kamp-tur">30 kampe</span></li>
       </ul>
     </div>
-  </div>
 
-  <div id="a-spillere" class="inner-c">
     <div class="card">
-      <div class="card-hdr"><span>Spillertrup 2025/26</span><small>Kilde: Wikipedia</small></div>
-      <div class="card-body">
-        <div class="lbl" style="margin-bottom:.5rem">Målvogtere</div>
-        <div class="squad-grid" style="margin-bottom:1rem">
-          <div class="squad-player"><div class="squad-nr">1</div><div class="squad-name">Martin Hansen</div><div class="squad-pos">MV</div></div>
-          <div class="squad-player"><div class="squad-nr">16</div><div class="squad-name">Viljar Myhra</div><div class="squad-pos">MV</div></div>
-        </div>
-        <div class="lbl" style="margin-bottom:.5rem">Forsvarsspillere</div>
-        <div class="squad-grid" style="margin-bottom:1rem">
-          <div class="squad-player"><div class="squad-nr">3</div><div class="squad-name">Adam Sørensen</div><div class="squad-pos">FV</div></div>
-          <div class="squad-player"><div class="squad-nr">4</div><div class="squad-name">Bjørn Paulsen</div><div class="squad-pos">CB</div></div>
-          <div class="squad-player"><div class="squad-nr">5</div><div class="squad-name">Nicolas Bürgy</div><div class="squad-pos">CB</div></div>
-          <div class="squad-player"><div class="squad-nr">15</div><div class="squad-name">Marcus McCoy</div><div class="squad-pos">HB</div></div>
-          <div class="squad-player"><div class="squad-nr">20</div><div class="squad-name">Leeroy Owusu</div><div class="squad-pos">HB</div></div>
-          <div class="squad-player"><div class="squad-nr">24</div><div class="squad-name">Yaya Bojang</div><div class="squad-pos">CB/DM</div></div>
-          <div class="squad-player"><div class="squad-nr">29</div><div class="squad-name">James Gomez</div><div class="squad-pos">CB</div></div>
-        </div>
-        <div class="lbl" style="margin-bottom:.5rem">Midtbanespillere</div>
-        <div class="squad-grid" style="margin-bottom:1rem">
-          <div class="squad-player"><div class="squad-nr">6</div><div class="squad-name">Jakob Bonde</div><div class="squad-pos">DM</div></div>
-          <div class="squad-player" style="border:1.5px solid var(--ob-border)"><div class="squad-nr">8 ★</div><div class="squad-name">Rasmus Falk</div><div class="squad-pos">CM · Kaptajn</div></div>
-          <div class="squad-player"><div class="squad-nr">14</div><div class="squad-name">Gustav Grubbe</div><div class="squad-pos">DM</div></div>
-          <div class="squad-player"><div class="squad-nr">18</div><div class="squad-name">Max Ejdum</div><div class="squad-pos">CM</div></div>
-          <div class="squad-player"><div class="squad-nr">19</div><div class="squad-name">Tom Trybull</div><div class="squad-pos">CM</div></div>
-          <div class="squad-player"><div class="squad-nr">22</div><div class="squad-name">I. Ouédraogo</div><div class="squad-pos">DM</div></div>
-        </div>
-        <div class="lbl" style="margin-bottom:.5rem">Angribere</div>
-        <div class="squad-grid">
-          <div class="squad-player"><div class="squad-nr">7</div><div class="squad-name">Fiete Arp</div><div class="squad-pos">ST</div></div>
-          <div class="squad-player"><div class="squad-nr">11</div><div class="squad-name">Jona Niemiec</div><div class="squad-pos">ST</div></div>
-          <div class="squad-player" style="border:1.5px solid var(--ob-border)"><div class="squad-nr">17 ⚽</div><div class="squad-name">Noah Ganaus</div><div class="squad-pos">ST · Topscorer (9)</div></div>
-          <div class="squad-player"><div class="squad-nr">23</div><div class="squad-name">William Martin</div><div class="squad-pos">VK/HK</div></div>
-          <div class="squad-player"><div class="squad-nr">31</div><div class="squad-name">Jay-Roy Grot</div><div class="squad-pos">ST</div></div>
-        </div>
-      </div>
+      <div class="card-hdr"><span>🏠 Hjemme vs Ude</span><small>SuperStats.dk</small></div>
+      <ul class="kamp-list">
+        <li class="kamp"><span style="width:60px;font-weight:600">Hjemme</span><span class="kamp-hold">7S 3U 6T · 28-30 mål</span><span class="kamp-res res-d">24 pt</span><span class="kamp-tur">16 kampe</span></li>
+        <li class="kamp"><span style="width:60px;font-weight:600">Ude</span><span class="kamp-hold">4S 5U 7T · 23-30 mål</span><span class="kamp-res res-l">17 pt</span><span class="kamp-tur">16 kampe</span></li>
+      </ul>
     </div>
-  </div>
 
-  <div id="a-analyse" class="inner-c">
-    <div class="insight-grid">
-      <div class="insight"><div class="insight-icon">⚽</div><div class="insight-title">Angreb</div><div class="insight-text" id="ins-att">Henter…</div></div>
-      <div class="insight"><div class="insight-icon">🛡️</div><div class="insight-title">Forsvar</div><div class="insight-text" id="ins-def">Henter…</div></div>
-      <div class="insight"><div class="insight-icon">📊</div><div class="insight-title">Sæson</div><div class="insight-text" id="ins-sea">Henter…</div></div>
-      <div class="insight"><div class="insight-icon">🌟</div><div class="insight-title">Comeback</div><div class="insight-text">OB rykkede ned i 2024 og vandt 1. division — en historisk comeback-sæson til Superligaen.</div></div>
-    </div>
     <div class="card">
       <div class="card-body">
-        <div class="lbl">OB's mål for og imod vs ligaen</div>
+        <div class="lbl">OB vs resten — mål for og imod</div>
         <div class="lgd">
           <span><span class="ld" style="background:#003B75"></span>OB mål for</span>
           <span><span class="ld" style="background:#B4B2A9"></span>Andre mål for</span>
           <span><span class="ld" style="background:#85B7EB"></span>OB mål imod</span>
           <span><span class="ld" style="background:#D3D1C7"></span>Andre mål imod</span>
         </div>
-        <div style="position:relative;width:100%;height:270px">
-          <canvas id="chart-liga"></canvas>
+        <div style="position:relative;height:260px"><canvas id="chart-liga"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Superliga 2526 -->
+  <div id="t2526-liga" class="sub-c">
+    <button class="refresh-btn" id="rb2" onclick="loadData()">↻ Opdater stilling</button>
+    <div class="card">
+      <div class="card-hdr"><span>3F Superliga 2025/26</span><small id="liga-ts">—</small></div>
+      <div style="overflow-x:auto">
+        <table class="liga-table" style="table-layout:fixed;width:100%">
+          <thead><tr>
+            <th style="width:30px">#</th><th>Hold</th>
+            <th style="width:30px">Sp</th><th style="width:30px">Pt</th>
+            <th style="width:30px">MF</th><th style="width:30px">MI</th>
+            <th style="width:36px">MD</th><th style="width:62px">Form</th>
+          </tr></thead>
+          <tbody id="liga-tbody"><tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--tx3)">Henter…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pokalen 2526 -->
+  <div id="t2526-pokal" class="sub-c">
+    <div class="ob-hero" style="background:linear-gradient(135deg,#1a3a1a 0%,#2d6a2d 100%)">
+      <div class="ob-top">
+        <img class="ob-logo" src="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=200" alt="OB">
+        <div class="ob-info"><h2>DBU Pokalen 2025/26</h2><p>Oddset Pokalen</p></div>
+        <div class="ob-badge"><div class="ob-badge-l">Resultat</div><div class="ob-badge-v" style="font-size:16px;line-height:1.4">Kvartfinale</div></div>
+      </div>
+      <div class="ob-verdict" style="border-left-color:rgba(255,255,255,.4)">
+        💚 OB nåede kvartfinalen i 2025/26 — et flot pokaleventyr. OB har vundet pokalen 5 gange i alt.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span>OB's pokalvej 2025/26</span></div>
+      <div class="pokal-runde-titel">3. runde</div>
+      <div class="pokal-kamp ob-match">
+        <span style="flex:1;font-weight:500">OB videre til kvartfinalen ✓</span>
+        <span class="kamp-res res-w">V</span>
+      </div>
+      <div class="pokal-runde-titel">Kvartfinale</div>
+      <div class="pokal-kamp ob-match">
+        <span style="flex:1;font-weight:500">OB ude af turneringen</span>
+        <span class="kamp-res res-l">T</span>
+      </div>
+      <div style="padding:.75rem 1rem;font-size:12px;color:var(--tx3)">
+        💡 Præcise resultater opdateres fra Wikipedia løbende.
+      </div>
+    </div>
+    <div class="insight-grid">
+      <div class="insight"><div class="insight-icon">🏆</div><div class="insight-title">5 pokaltitler</div><div class="insight-text">1983, 1991, 1993, 2002 og 2007.</div></div>
+      <div class="insight"><div class="insight-icon">⚔️</div><div class="insight-title">Seneste finale</div><div class="insight-text">2022 — tabte til FCM på straffespark.</div></div>
+      <div class="insight"><div class="insight-icon">🌍</div><div class="insight-title">Miraklet i Madrid</div><div class="insight-text">1994: OB slog Real Madrid 2–0 på Bernabéu i UEFA Cup.</div></div>
+      <div class="insight"><div class="insight-icon">📅</div><div class="insight-title">2026/27 pokalen</div><div class="insight-text">Starter til sommer — OB er selvfølgelig med!</div></div>
+    </div>
+  </div>
+
+
+  <!-- Avanceret stats 2526 -->
+  <div id="t2526-avanceret" class="sub-c">
+    <div class="card">
+      <div class="card-hdr"><span>📊 Avancerede statistikker 2025/26</span><small>Kilde: FotMob</small></div>
+      <div class="card-body">
+        <div class="lbl" style="margin-bottom:.75rem">OB's placering i ligaen — 12 hold totalt</div>
+        <div id="adv-stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span>💡 Hvad fortæller tallene?</span></div>
+      <div class="card-body">
+        <div class="insight-grid">
+          <div class="insight">
+            <div class="insight-icon">🎯</div>
+            <div class="insight-title">xG vs faktiske mål</div>
+            <div class="insight-text">OB's xG på 50,6 svarer næsten præcist til de 51 scorede mål — OB udnyttede chancerne effektivt og "fortjente" sine mål.</div>
+          </div>
+          <div class="insight">
+            <div class="insight-icon">⚠️</div>
+            <div class="insight-title">Defensivt problem</div>
+            <div class="insight-text">Kun 4 clean sheets og 1,9 mål indkasset per kamp afslører OB's store svaghed i 2025/26. Forsvarsspillet skal markant forbedres.</div>
+          </div>
+          <div class="insight">
+            <div class="insight-icon">✅</div>
+            <div class="insight-title">Offensivt stærk</div>
+            <div class="insight-text">4. flest mål per kamp og 5. flest skud på mål viser at OB's angreb fungerede godt — problemet var i den anden ende.</div>
+          </div>
+          <div class="insight">
+            <div class="insight-icon">👥</div>
+            <div class="insight-title">Populær klub</div>
+            <div class="insight-text">9.904 tilskuere i snit hjemme — 4. bedst i ligaen. OB's fans mødte op til comeback-sæsonen!</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ══ POKALEN ══ -->
-<div id="tab-pokal" class="main-content">
-  <div class="ob-hero" style="background:linear-gradient(135deg,#1a3a1a 0%,#2d6a2d 100%)">
-    <div class="ob-top">
-      <img class="ob-logo" src="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=200" alt="OB">
-      <div class="ob-name">
-        <h2>DBU Pokalen 2025/26</h2>
-        <p>Oddset Pokalen · OB nåede kvartfinalen</p>
-      </div>
-      <div class="ob-badge">
-        <div class="ob-badge-lbl">Resultat</div>
-        <div class="ob-badge-val" style="font-size:18px;line-height:1.3">QF</div>
-      </div>
-    </div>
-    <div class="verdict" style="border-left-color:rgba(255,255,255,.4)">
-      💚 OB nåede kvartfinalen i årets pokalturnering — et flot resultat. OB har vundet pokalen 5 gange i klubbens historie.
-    </div>
+</div><!-- end 2526 -->
+
+
+<!-- ══════════════════════════════════════════════════
+     SÆSON 2026/27
+══════════════════════════════════════════════════ -->
+<div id="s-2627" class="season">
+
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="subTab('2627','ob',this)">OB Forudsigelse</button>
+    <button class="sub-tab" onclick="subTab('2627','liga',this)">Superliga</button>
+    <button class="sub-tab" onclick="subTab('2627','pokal',this)">DBU Pokalen</button>
   </div>
 
-  <div class="card">
-    <div class="card-hdr"><span>OB's pokalvej 2025/26</span></div>
-    <div class="pokal-runde">
-      <div class="pokal-runde-titel" style="padding:0 1.1rem;padding-top:.8rem">3. runde</div>
-      <div class="pokal-kamp ob-match">
-        <span class="pk-dato">—</span>
-        <span class="pk-hold">OB vs modstander</span>
-        <span class="pk-res res-w">V</span>
-        <span class="pk-ud">Videre</span>
+  <!-- OB forudsigelse 2627 -->
+  <div id="t2627-ob" class="sub-c on">
+    <div class="pred-hero">
+      <div class="pred-label">Forudsigelse baseret på 2025/26 · Starter 24. juli 2026</div>
+      <div style="display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap">
+        <div>
+          <div class="pred-pos" id="pred-pos">—</div>
+          <div class="pred-sub">Forventet placering i grundspil</div>
+        </div>
+        <div style="margin-left:auto;text-align:right">
+          <div style="font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.05em">Titelchance</div>
+          <div style="font-size:26px;font-weight:800" id="pred-title">—</div>
+        </div>
+      </div>
+      <div class="pred-grid" style="margin-top:.9rem">
+        <div class="pred-m"><div class="pred-m-l">Forv. point</div><div class="pred-m-v" id="pred-pts">—</div></div>
+        <div class="pred-m"><div class="pred-m-l">Forv. mål for</div><div class="pred-m-v" id="pred-gf">—</div></div>
+        <div class="pred-m"><div class="pred-m-l">Forv. mål imod</div><div class="pred-m-v" id="pred-ga">—</div></div>
+        <div class="pred-m"><div class="pred-m-l">Top-6 chance</div><div class="pred-m-v" id="pred-top6">—</div></div>
       </div>
     </div>
-    <div class="pokal-runde">
-      <div class="pokal-runde-titel" style="padding:0 1.1rem">Kvartfinale</div>
-      <div class="pokal-kamp ob-match">
-        <span class="pk-dato">Dec 2025</span>
-        <span class="pk-hold">OB — ude af turneringen</span>
-        <span class="pk-res res-l">T</span>
-        <span class="pk-ud">Ude</span>
-      </div>
+    <div class="insight-grid">
+      <div class="insight"><div class="insight-icon">📅</div><div class="insight-title">Sæsonstart</div><div class="insight-text"><strong>Fredag 24. juli 2026</strong> — fem dage efter VM-finalen i USA.</div></div>
+      <div class="insight"><div class="insight-icon">🔑</div><div class="insight-title">Nøglefaktor</div><div class="insight-text" id="pred-key">Beregner…</div></div>
+      <div class="insight"><div class="insight-icon">💪</div><div class="insight-title">Styrke</div><div class="insight-text" id="pred-str">Beregner…</div></div>
+      <div class="insight"><div class="insight-icon">⚠️</div><div class="insight-title">Udfordring</div><div class="insight-text" id="pred-risk">Beregner…</div></div>
     </div>
-    <div style="padding:.75rem 1.1rem;font-size:12px;color:var(--tx3)">
-      💡 Præcise kampresultater fra pokalen tilføjes når Wikipedia opdaterer OB's sæsonside.
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-hdr"><span>OB's pokalhistorie</span></div>
-    <div class="card-body">
-      <div class="insight-grid">
-        <div class="insight"><div class="insight-icon">🏆</div><div class="insight-title">5 pokaltitler</div><div class="insight-text">1983, 1991, 1993, 2002 og 2007 — OB er en af Danmarks mest succesfulde pokalkluber.</div></div>
-        <div class="insight"><div class="insight-icon">⚔️</div><div class="insight-title">Seneste finale</div><div class="insight-text">2022 — OB tabte til FC Midtjylland på straffespark efter 1–1.</div></div>
-        <div class="insight"><div class="insight-icon">🌍</div><div class="insight-title">Miraklet i Madrid</div><div class="insight-text">1994: OB slog Real Madrid 2–0 på Bernabéu i UEFA Cup — en af dansk fodbolds største bedrifter.</div></div>
-        <div class="insight"><div class="insight-icon">📅</div><div class="insight-title">Næste sæson</div><div class="insight-text">DBU Pokalen 2026/27 starter til sommer. OB er selvfølgelig med!</div></div>
+    <div class="card">
+      <div class="card-body">
+        <div class="lbl">Titelchance 2026/27 — alle hold</div>
+        <div id="prob-bars" style="margin-top:.5rem"></div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ══ LIGA ══ -->
-<div id="tab-liga" class="main-content">
-  <button class="refresh-btn" id="refresh-btn2" onclick="loadData()">↻ Opdater stilling fra Wikipedia</button>
-  <div class="card">
-    <div class="card-hdr"><span>3F Superliga 2025/26</span><small id="liga-ts"></small></div>
-    <div style="overflow-x:auto">
-      <table class="liga-table" style="table-layout:fixed;width:100%">
-        <thead><tr>
-          <th style="width:30px">#</th><th>Hold</th>
-          <th style="width:32px">Sp</th><th style="width:32px">Pt</th>
-          <th style="width:32px">MF</th><th style="width:32px">MI</th>
-          <th style="width:38px">MD</th><th style="width:65px">Form</th>
-        </tr></thead>
-        <tbody id="liga-tbody"><tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--tx3)">Henter stilling…</td></tr></tbody>
-      </table>
+  <!-- Superliga 2627 -->
+  <div id="t2627-liga" class="sub-c">
+    <div class="coming-soon">
+      <div class="cs-icon">⚽</div>
+      <h3>Sæsonen er ikke startet endnu</h3>
+      <p>3F Superliga 2026/27 starter fredag den 24. juli 2026. Stillingen vises her automatisk når Wikipedia opdateres efter den første spillerunde.</p>
+      <span class="cs-date">📅 Sæsonstart: 24. juli 2026</span>
     </div>
-  </div>
-</div>
-
-<!-- ══ FORUDSIGELSE ══ -->
-<div id="tab-pred" class="main-content">
-  <div class="pred-hero">
-    <div class="pred-label">Forudsigelse · 2026/27 · Starter 24. juli 2026</div>
-    <div style="display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap">
-      <div>
-        <div class="pred-pos" id="pred-pos">—</div>
-        <div class="pred-sub">Forventet placering · grundspil</div>
-      </div>
-      <div style="margin-left:auto;text-align:right">
-        <div style="font-size:11px;opacity:.6">Titelchance</div>
-        <div style="font-size:28px;font-weight:800" id="pred-title">—</div>
+    <div class="card">
+      <div class="card-hdr"><span>Forventet ligastilling 2026/27</span><small>10.000 Monte Carlo-simuleringer</small></div>
+      <div style="overflow-x:auto">
+        <table class="liga-table" style="table-layout:fixed;width:100%">
+          <thead><tr>
+            <th style="width:30px">#</th><th>Hold</th>
+            <th style="width:30px">Pt</th><th style="width:30px">MF</th>
+            <th style="width:30px">MI</th><th style="width:36px">MD</th>
+            <th style="width:76px">Titelchance</th>
+          </tr></thead>
+          <tbody id="pred-tbody"><tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--tx3)">Beregner…</td></tr></tbody>
+        </table>
       </div>
     </div>
-    <div class="pred-metrics">
-      <div class="pred-m"><div class="pred-m-l">Forv. point</div><div class="pred-m-v" id="pred-pts">—</div></div>
-      <div class="pred-m"><div class="pred-m-l">Forv. mål for</div><div class="pred-m-v" id="pred-gf">—</div></div>
-      <div class="pred-m"><div class="pred-m-l">Forv. mål imod</div><div class="pred-m-v" id="pred-ga">—</div></div>
-      <div class="pred-m"><div class="pred-m-l">Top-6 chance</div><div class="pred-m-v" id="pred-top6">—</div></div>
+  </div>
+
+  <!-- Pokalen 2627 -->
+  <div id="t2627-pokal" class="sub-c">
+    <div class="coming-soon">
+      <div class="cs-icon">🏆</div>
+      <h3>DBU Pokalen 2026/27</h3>
+      <p>Pokalen starter til sommer. OB's kampe og resultater vises her automatisk når sæsonen er i gang.</p>
+      <span class="cs-date">📅 Starter: sommer 2026</span>
+    </div>
+    <div class="insight-grid">
+      <div class="insight"><div class="insight-icon">🏆</div><div class="insight-title">5 pokaltitler</div><div class="insight-text">1983, 1991, 1993, 2002 og 2007 — kan 2026/27 blive nr. 6?</div></div>
+      <div class="insight"><div class="insight-icon">🌍</div><div class="insight-title">Miraklet i Madrid</div><div class="insight-text">1994: OB slog Real Madrid 2–0 på Bernabéu. Et af dansk fodbolds største øjeblikke.</div></div>
+      <div class="insight"><div class="insight-icon">⚔️</div><div class="insight-title">Sidste finale</div><div class="insight-text">2022 — OB tabte til Midtjylland på straffespark efter 1–1.</div></div>
+      <div class="insight"><div class="insight-icon">💙</div><div class="insight-title">OB's mål</div><div class="insight-text">En stærk pokalindsats og top-6 i ligaen — det er ambitionerne for 2026/27.</div></div>
     </div>
   </div>
 
-  <div class="insight-grid">
-    <div class="insight"><div class="insight-icon">📅</div><div class="insight-title">Sæsonstart</div><div class="insight-text"><strong>Fredag 24. juli 2026</strong> — fem dage efter VM-finalen i USA.</div></div>
-    <div class="insight"><div class="insight-icon">🔑</div><div class="insight-title">Nøglefaktor</div><div class="insight-text" id="pred-key">Beregner…</div></div>
-    <div class="insight"><div class="insight-icon">💪</div><div class="insight-title">Styrke</div><div class="insight-text" id="pred-str">Beregner…</div></div>
-    <div class="insight"><div class="insight-icon">⚠️</div><div class="insight-title">Udfordring</div><div class="insight-text" id="pred-risk">Beregner…</div></div>
-  </div>
-
-  <div class="inner-tabs">
-    <button class="inner-tab active" onclick="innerTab('b','titelchancer',this)">Titelchancer</button>
-    <button class="inner-tab" onclick="innerTab('b','forventet',this)">Forventet stilling</button>
-  </div>
-
-  <div id="b-titelchancer" class="inner-c on card">
-    <div class="card-body">
-      <div class="lbl">Titelchance 2026/27 — alle hold</div>
-      <div id="prob-bars" style="margin-top:.5rem"></div>
-    </div>
-  </div>
-
-  <div id="b-forventet" class="inner-c card">
-    <div class="card-hdr"><span>Forventet ligastilling 2026/27</span><small>10.000 simuleringer</small></div>
-    <div style="overflow-x:auto">
-      <table class="liga-table" style="table-layout:fixed;width:100%">
-        <thead><tr>
-          <th style="width:30px">#</th><th>Hold</th>
-          <th style="width:32px">Pt</th><th style="width:32px">MF</th>
-          <th style="width:32px">MI</th><th style="width:38px">MD</th>
-          <th style="width:78px">Titelchance</th>
-        </tr></thead>
-        <tbody id="pred-tbody"><tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--tx3)">Beregner…</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-</div>
+</div><!-- end 2627 -->
 
 <footer>
-  <p>Data: <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Danish_Superliga" target="_blank">Wikipedia</a> · Spillertrup: <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Odense_Boldklub_season" target="_blank">OB-sæsonside</a></p>
-  <p>Forudsigelse: Monte Carlo · Poisson-fordeling · 10.000 sæsoner</p>
+  <p>Data: <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Danish_Superliga" target="_blank">Wikipedia</a> · Opdateres automatisk efter hver kamp</p>
+  <p>Forudsigelse: Monte Carlo · 10.000 simuleringer · Baseret på 2025/26-resultater</p>
   <p style="margin-top:.3rem;color:#b8cfe0">OB er de bedste 💙 · Tillykke med fødselsdagen!</p>
 </footer>
 </div>
 
 <script>
+
+
+const OB_ADVANCED_2526 = {
+  rating:      {val:'6,91', rank:6,  label:'FotMob-rating',        kontekst:'6. bedst i ligaen'},
+  maalKamp:    {val:'1,6',  rank:4,  label:'Mål pr. kamp',         kontekst:'4. bedst — stærkt angreb'},
+  indKamp:     {val:'1,9',  rank:9,  label:'Indkasset pr. kamp',   kontekst:'9. dårligst — defensiv svaghed'},
+  boldbes:     {val:'51,6%',rank:6,  label:'Boldbesiddelse',       kontekst:'6. bedst — aktiv spilstil'},
+  cleanSheets: {val:'4',    rank:9,  label:'Clean sheets',         kontekst:'Kun 4 nulkampe — forsvarsproblem'},
+  tilskuere:   {val:'9.904',rank:4,  label:'Tilskuere hjemme',     kontekst:'4. mest besøgte hjemmebane'},
+  xG:          {val:'50,6', rank:5,  label:'xG (forventede mål)',  kontekst:'5. bedst — chancerne er der!'},
+  xGdiff:      {val:'-0,1', rank:8,  label:'xG-forskel',           kontekst:'8. — underperformer lidt på chancer'},
+  skudMaal:    {val:'4,8',  rank:5,  label:'Skud på mål pr. kamp', kontekst:'5. bedst — presser modstanderen'},
+};
+
+const OB_KAMPE_2526 = [
+  {r:1,  dato:'20.07', kamp:'FCM - OB',  res:'3-3', ude:true,  kode:'D'},
+  {r:2,  dato:'27.07', kamp:'OB - VFF',  res:'3-1', ude:false, kode:'W'},
+  {r:3,  dato:'01.08', kamp:'VB - OB',   res:'4-0', ude:true,  kode:'L'},
+  {r:4,  dato:'11.08', kamp:'OB - RFC',  res:'3-2', ude:false, kode:'W'},
+  {r:5,  dato:'18.08', kamp:'OB - AGF',  res:'1-5', ude:false, kode:'L'},
+  {r:6,  dato:'23.08', kamp:'FCK - OB',  res:'1-1', ude:true,  kode:'D'},
+  {r:7,  dato:'31.08', kamp:'OB - FCN',  res:'1-2', ude:false, kode:'L'},
+  {r:8,  dato:'14.09', kamp:'SIF - OB',  res:'2-1', ude:true,  kode:'L'},
+  {r:9,  dato:'19.09', kamp:'OB - FCF',  res:'3-2', ude:false, kode:'W'},
+  {r:10, dato:'28.09', kamp:'BIF - OB',  res:'5-1', ude:true,  kode:'L'},
+  {r:11, dato:'03.10', kamp:'OB - SJF',  res:'1-1', ude:false, kode:'D'},
+  {r:12, dato:'19.10', kamp:'VFF - OB',  res:'1-2', ude:true,  kode:'W'},
+  {r:13, dato:'27.10', kamp:'OB - BIF',  res:'1-4', ude:false, kode:'L'},
+  {r:14, dato:'02.11', kamp:'FCN - OB',  res:'2-4', ude:true,  kode:'W'},
+  {r:15, dato:'07.11', kamp:'OB - SIF',  res:'1-1', ude:false, kode:'D'},
+  {r:16, dato:'24.11', kamp:'RFC - OB',  res:'0-1', ude:true,  kode:'W'},
+  {r:17, dato:'30.11', kamp:'OB - FCK',  res:'2-0', ude:false, kode:'W'},
+  {r:18, dato:'06.12', kamp:'AGF - OB',  res:'1-1', ude:true,  kode:'D'},
+  {r:19, dato:'14.02', kamp:'OB - VB',   res:'1-2', ude:false, kode:'L'},
+  {r:20, dato:'22.02', kamp:'FCF - OB',  res:'0-2', ude:true,  kode:'W'},
+  {r:21, dato:'28.02', kamp:'OB - FCM',  res:'1-1', ude:false, kode:'D'},
+  {r:22, dato:'08.03', kamp:'SJF - OB',  res:'2-1', ude:true,  kode:'L'},
+  {r:23, dato:'15.03', kamp:'OB - FCK',  res:'2-1', ude:false, kode:'W'},
+  {r:24, dato:'22.03', kamp:'OB - RFC',  res:'0-0', ude:false, kode:'D'},
+  {r:25, dato:'05.04', kamp:'FCF - OB',  res:'0-2', ude:true,  kode:'W'},
+  {r:26, dato:'11.04', kamp:'OB - SIF',  res:'1-1', ude:false, kode:'D'},
+  {r:27, dato:'19.04', kamp:'VB - OB',   res:'2-1', ude:true,  kode:'L'},
+  {r:28, dato:'26.04', kamp:'FCF - OB',  res:'0-2', ude:true,  kode:'W'},
+  {r:29, dato:'03.05', kamp:'OB - SIF',  res:'2-0', ude:false, kode:'W'},
+  {r:30, dato:'11.05', kamp:'RFC - OB',  res:'2-2', ude:true,  kode:'D'},
+  {r:31, dato:'17.05', kamp:'OB - VB',   res:'0-1', ude:false, kode:'L'},
+  {r:32, dato:'21.05', kamp:'BIF - FCK', res:'1-3', ude:null,  kode:null}, // finale - ikke OB
+];
+
+const OB_STATS_2526 = {
+  samlet: {k:32, v:11, u:8, t:13, gf:51, ga:60, pts:41},
+  hjemme: {k:16, v:7,  u:3, t:6,  gf:28, ga:30, pts:24},
+  ude:    {k:16, v:4,  u:5, t:7,  gf:23, ga:30, pts:17},
+};
+
+const OB_TOPSCORERE_2526 = [
+  {navn:'Noah Ganaus',  maal:11, kampe:30},
+  {navn:'Fiete Arp',    maal:9,  kampe:28},
+  {navn:'Jay-Roy Grot', maal:7,  kampe:29},
+  {navn:'Jona Niemiec', maal:4,  kampe:20},
+  {navn:'Rasmus Falk',  maal:3,  kampe:30},
+];
+
+const LIGA_TOPSCORERE_2526 = [
+  {navn:'Franculino Djú', hold:'FCM', maal:17},
+  {navn:'Tonni Adamsen',  hold:'SIF', maal:14},
+  {navn:'Tobias Bech',    hold:'AGF', maal:12},
+  {navn:'Jordan Larsson', hold:'FCK', maal:11},
+  {navn:'Noah Ganaus',    hold:'OB',  maal:11},
+  {navn:'Fiete Arp',      hold:'OB',  maal:9},
+];
+
 const COLORS={
   agf:'#639922',midtjylland:'#378ADD',sønderjyske:'#EF9F27',sonderjyske:'#EF9F27',
   brøndby:'#D85A30',brondby:'#D85A30',viborg:'#7F77DD',
@@ -536,19 +606,23 @@ function formCell(form){
 
 let TEAMS=[],OB_IDX=0,chartLiga=null;
 
-function mainTab(id,btn){
-  document.querySelectorAll('.main-tab').forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll('.main-content').forEach(e=>e.classList.remove('on'));
+function switchSeason(id,btn){
+  document.querySelectorAll('.ss-btn').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.season').forEach(e=>e.classList.remove('on'));
   btn.classList.add('active');
-  document.getElementById('tab-'+id).classList.add('on');
+  document.getElementById('s-'+id).classList.add('on');
 }
-function innerTab(prefix,id,btn){
-  document.querySelectorAll(`#tab-${prefix==='a'?'ob':'pred'} .inner-tab`).forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll(`[id^="${prefix}-"]`).forEach(e=>e.classList.remove('on'));
+function subTab(season,id,btn){
+  const parent=document.getElementById('s-'+season);
+  parent.querySelectorAll('.sub-tab').forEach(e=>e.classList.remove('active'));
+  parent.querySelectorAll('.sub-c').forEach(e=>e.classList.remove('on'));
   btn.classList.add('active');
-  document.getElementById(`${prefix}-${id}`).classList.add('on');
+  document.getElementById('t'+season+'-'+id).classList.add('on');
 }
-function setStatus(s,t){document.getElementById('sdot').className='dot dot-'+s;document.getElementById('stxt').textContent=t;}
+function setStatus(s,t){
+  document.getElementById('sdot').className='dot dot-'+s;
+  document.getElementById('stxt').textContent=t;
+}
 
 function parseWikiHTML(html){
   const doc=new DOMParser().parseFromString(html,'text/html');
@@ -578,7 +652,7 @@ function parseWikiHTML(html){
 }
 
 async function loadData(){
-  ['refresh-btn','refresh-btn2'].forEach(id=>{
+  ['rb1','rb2'].forEach(id=>{
     const b=document.getElementById(id);
     if(b){b.disabled=true;b.innerHTML='<span class="spin-d"></span> Henter…';}
   });
@@ -588,46 +662,83 @@ async function loadData(){
     if(!res.ok)throw new Error('Wikipedia '+res.status);
     const data=await res.json();
     const teams=parseWikiHTML(data?.parse?.text?.['*']||'');
-    if(!teams||teams.length<6)throw new Error('Data ikke fundet');
+    if(!teams||teams.length<6)throw new Error('Tabel ikke fundet');
     const obIdx=teams.findIndex(t=>isOB(t.name));
     if(obIdx<0)throw new Error('OB ikke fundet');
     TEAMS=teams;OB_IDX=obIdx;
     const now=new Date().toLocaleString('da-DK',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     setStatus('live','Live · Wikipedia · '+now);
-    document.getElementById('form-ts').textContent=now;
     document.getElementById('liga-ts').textContent=now;
-    renderOB(teams,obIdx);
+    renderOBStats(teams,obIdx);
+    renderKampListe();
     renderLiga(teams,obIdx);
-    runSim(teams,obIdx);
+    setTimeout(()=>runSim(teams,obIdx),50);
   }catch(e){
     setStatus('err','Wikipedia utilgængelig');
     console.warn(e);
   }
-  ['refresh-btn','refresh-btn2'].forEach(id=>{
+  ['rb1','rb2'].forEach(id=>{
     const b=document.getElementById(id);
     if(b){b.disabled=false;b.innerHTML='↻ Opdater med nyeste data';}
   });
 }
 
-function renderOB(teams,obIdx){
-  const ob=teams[obIdx];
-  document.getElementById('ob-rank').textContent=(obIdx+1)+'.';
+
+function renderAdvancedStats(){
+  const el=document.getElementById('adv-stats-grid');
+  if(!el)return;
+  const stats=OB_ADVANCED_2526;
+  const items=Object.values(stats);
+  el.innerHTML=items.map(s=>{
+    const isGood=s.rank<=4;
+    const isBad=s.rank>=9;
+    const color=isGood?'#EAF3DE':isBad?'#FEE2E2':'var(--surf2)';
+    const textColor=isGood?'#3B6D11':isBad?'#991b1b':'var(--tx2)';
+    const rankBg=isGood?'#3B6D11':isBad?'#991b1b':'var(--ob)';
+    return`<div style="background:${color};border-radius:var(--rs);padding:.8rem 1rem;position:relative">
+      <div style="position:absolute;top:.6rem;right:.7rem;background:${rankBg};color:#fff;
+        border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">#${s.rank}</div>
+      <div style="font-size:10px;color:${textColor};text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">${s.label}</div>
+      <div style="font-size:22px;font-weight:800;color:var(--ob);margin-bottom:2px">${s.val}</div>
+      <div style="font-size:11px;color:${textColor};opacity:.8">${s.kontekst}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderKampListe(){
+  const el=document.getElementById('kamp-list');
+  if(!el)return;
+  // Show last 10 matches, most recent first
+  const kampe=OB_KAMPE_2526.filter(k=>k.kode!==null).reverse().slice(0,32);
+  el.innerHTML=kampe.map(k=>{
+    const cls=k.kode==='W'?'res-w':k.kode==='D'?'res-d':'res-l';
+    const label=k.kode==='W'?'V':k.kode==='D'?'U':'T';
+    return`<li class="kamp">
+      <span class="kamp-dato">${k.dato}</span>
+      <span class="kamp-hold">${k.kamp}<em>${k.ude?'Ude':'Hjemme'}</em></span>
+      <span class="kamp-res ${cls}">${k.res}</span>
+      <span class="kamp-tur">Runde ${k.r}</span>
+    </li>`;
+  }).join('');
+}
+
+function renderOBStats(teams,obIdx){
+  const ob=teams[obIdx],rank=obIdx+1;
+  document.getElementById('ob-rank').textContent=rank+'.';
   document.getElementById('ob-pld').textContent=ob.pld;
   document.getElementById('ob-pts').textContent=ob.pts;
   document.getElementById('ob-gf').textContent=ob.gf;
   document.getElementById('ob-ga').textContent=ob.ga;
   document.getElementById('ob-wdl').textContent=`${ob.w}·${ob.d}·${ob.l}`;
   const gd=ob.gf-ob.ga,gpg=(ob.gf/Math.max(ob.pld,1)).toFixed(2),cgpg=(ob.ga/Math.max(ob.pld,1)).toFixed(2);
-  const rank=obIdx+1;
   document.getElementById('ob-verdict').textContent=
-    rank<=6?`💙 Stærk sæson! OB sluttede på ${rank}. plads med ${ob.pts} point og nåede mesterskabsspillet.`
-    :rank<=9?`OB endte på ${rank}. plads med ${ob.pts} point — et nedrykningsspil i comeback-sæsonen.`
-    :`En hård sæson — ${rank}. plads med ${ob.pts} point. Zorniger har sin opgave klar til næste sæson.`;
+    rank<=6?`💙 Stærk comeback-sæson! OB sluttede på ${rank}. plads med ${ob.pts} point og nåede mesterskabsspillet.`
+    :rank<=9?`OB sluttede på ${rank}. plads med ${ob.pts} point — nedrykningsspil i comeback-sæsonen, men holdet overlevede.`
+    :`Hård sæson — ${rank}. plads med ${ob.pts} point. Zorniger har sin opgave klar til 2026/27.`;
   document.getElementById('ins-att').textContent=`${ob.gf} mål på ${ob.pld} kampe — ${gpg} per kamp. ${ob.gf>45?'Flot angrebsspil!':ob.gf>30?'Godkendt offensivt.':'Scoringen var en udfordring.'}`;
-  document.getElementById('ins-def').textContent=`${ob.ga} mål indkasset — ${cgpg} per kamp. ${ob.ga<35?'Solid defensiv sæson.':ob.ga<50?'Forsvaret kan forbedres.':'Defensiven kostede point.'}`;
-  document.getElementById('ins-sea').textContent=`${ob.w} sejre, ${ob.d} uafgjorte, ${ob.l} nederlag. MD: ${gd>=0?'+':''}${gd}. ${ob.w>ob.l?'Positiv balance — OB vandt flest kampe.':'Zorniger har arbejde foran sig til 2026/27.'}`;
+  document.getElementById('ins-def').textContent=`${ob.ga} mål indkasset — ${cgpg} per kamp. ${ob.ga<35?'Solid defensiv sæson.':ob.ga<50?'Forsvaret kan forbedres til næste sæson.':'Defensive udfordringer kostede point.'}`;
+  document.getElementById('ins-bal').textContent=`${ob.w} sejre, ${ob.d} uafgjorte, ${ob.l} nederlag. Måldifference: ${gd>=0?'+':''}${gd}. ${ob.w>ob.l?'Positiv balance!':'Zorniger har arbejde foran sig.'}`;
 
-  // Liga chart
   if(chartLiga)chartLiga.destroy();
   const sorted=[...teams].sort((a,b)=>b.pts-a.pts);
   chartLiga=new Chart(document.getElementById('chart-liga'),{
@@ -659,9 +770,8 @@ function renderLiga(teams,obIdx){
 function poisson(lam){let L=Math.exp(-lam),p=1,k=0;do{k++;p*=Math.random();}while(p>L);return k-1;}
 function simMatch(ai,di,pi,aj,dj,pj){
   const n=()=>(Math.random()+Math.random()+Math.random()-1.5)/1.5;
-  const pAdv=(pi-pj)/200;
-  const lA=Math.max(0.15,((ai/100)*(1-dj/150)+pAdv)*1.08*(1+n()*0.18)*2.2);
-  const lB=Math.max(0.15,((aj/100)*(1-di/150)-pAdv)*(1+n()*0.18)*2.2);
+  const lA=Math.max(0.15,((ai/100)*(1-dj/150)+(pi-pj)/200)*1.08*(1+n()*0.18)*2.2);
+  const lB=Math.max(0.15,((aj/100)*(1-di/150)-(pi-pj)/200)*(1+n()*0.18)*2.2);
   return[poisson(lA),poisson(lB)];
 }
 
@@ -696,16 +806,21 @@ function runSim(teams,obIdx){
   const tp=tw.map(w=>w/N*100),avgPt=ptA.map(v=>Math.round(v/N));
   const avgGf=gfA.map(v=>Math.round(v/N)),avgGa=gaA.map(v=>Math.round(v/N));
   const avgPos=posA.map(v=>(v/N).toFixed(1)),t6p=t6A.map(v=>(v/N*100).toFixed(1));
-  const ob=obIdx,predRank=parseFloat(avgPos[ob]);
-  document.getElementById('pred-pos').textContent=predRank.toFixed(1)+'.';
+  const ob=obIdx,pr=parseFloat(avgPos[ob]);
+  document.getElementById('pred-pos').textContent=pr.toFixed(1)+'.';
   document.getElementById('pred-title').textContent=tp[ob].toFixed(1)+'%';
   document.getElementById('pred-pts').textContent=avgPt[ob];
   document.getElementById('pred-gf').textContent=avgGf[ob];
   document.getElementById('pred-ga').textContent=avgGa[ob];
   document.getElementById('pred-top6').textContent=t6p[ob]+'%';
-  document.getElementById('pred-key').textContent=teams[ob].def<50?`Forsvaret (styrke ${teams[ob].def}/100) er nøglen. En stærkere defensiv sommertransfer kan flytte meget.`:`Konsistens bliver nøglen — OB har ballancen til at klare sig godt.`;
-  document.getElementById('pred-str').textContent=`Angrebsstyrke ${teams[ob].att}/100 baseret på ${teams[ob].gf} mål i 2025/26. ${teams[ob].att>65?'Et konkurrencedygtigt angreb.':'Scoringen skal op et niveau.'}`;
-  document.getElementById('pred-risk').textContent=predRank>7?`Risiko for nedrykningsspil igen. Sommervinduet bliver afgørende.`:`OB forventes at holde sig i øvre halvdel — en stabil 2026/27 sæson er realistisk.`;
+  document.getElementById('pred-key').textContent=teams[ob].def<50
+    ?`Forsvaret (${teams[ob].def}/100) er det vigtigste fokusområde. En god defensiv sommertransfer kan flytte OB markant op.`
+    :`Konsistens og det mentale bliver nøglen — OB har potentiale til en stærk 2026/27-sæson.`;
+  document.getElementById('pred-str').textContent=`Angrebsstyrke ${teams[ob].att}/100 baseret på ${teams[ob].gf} mål i 2025/26. ${teams[ob].att>65?'Kompetitivt angreb.':'Scoringen skal forbedres.'}`;
+  document.getElementById('pred-risk').textContent=pr>7
+    ?`Risiko for nedrykningsspil igen. Sommervinduet og Zorinigers taktiske arbejde bliver afgørende.`
+    :`OB forventes at holde sig i øvre halvdel — en stabil sæson er realistisk.`;
+
   const byTitle=[...Array(T).keys()].sort((a,b)=>tp[b]-tp[a]),maxTP=Math.max(...tp);
   document.getElementById('prob-bars').innerHTML=byTitle.map(idx=>{
     const isOB=idx===ob;
@@ -715,6 +830,7 @@ function runSim(teams,obIdx){
       <span class="pp" style="color:${isOB?'var(--ob)':'var(--tx2)'}">${tp[idx].toFixed(1)}%</span>
     </div>`;
   }).join('');
+
   const byPts=[...Array(T).keys()].sort((a,b)=>avgPt[b]-avgPt[a]);
   let divDone=false;
   document.getElementById('pred-tbody').innerHTML=byPts.map((idx,rank)=>{
@@ -732,6 +848,8 @@ function runSim(teams,obIdx){
   }).join('');
 }
 
+renderKampListe();
+renderAdvancedStats();
 loadData();
 </script>
 </body>
