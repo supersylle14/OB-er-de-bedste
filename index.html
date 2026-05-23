@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3F Superliga Simulator 2026/27</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f3;--surf:#fff;--surf2:#f0eeea;--bdr:rgba(0,0,0,.1);
+  --tx:#1a1a18;--tx2:#5f5e5a;--tx3:#9a9891;
+  --ob:#185FA5;--ob-l:#E6F1FB;--ob-d:#0C447C;
+  --r:10px;--rs:6px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1a1a18;--surf:#242422;--surf2:#2e2e2b;--bdr:rgba(255,255,255,.1);
+  --tx:#f0eeea;--tx2:#a8a69f;--tx3:#6b6963;--ob-l:#0c2d4a;--ob-d:#85b7eb;
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;padding:1.5rem 1rem 3rem}
+.wrap{max-width:860px;margin:0 auto}
+h1{font-size:22px;font-weight:600;margin-bottom:4px}
+.sub{font-size:13px;color:var(--tx2);margin-bottom:1.5rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.ob-hl{border:2px solid var(--ob)!important}
+.lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:.75rem}
+.ob-hdr{display:flex;align-items:center;gap:14px;margin-bottom:1rem;flex-wrap:wrap}
+.av{width:48px;height:48px;border-radius:50%;background:var(--ob-l);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--ob-d);flex-shrink:0}
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:.75rem}
+.mc{background:var(--surf2);border-radius:var(--rs);padding:.75rem 1rem}
+.mc-l{font-size:11px;color:var(--tx2);margin-bottom:3px}
+.mc-v{font-size:20px;font-weight:700;color:var(--tx)}
+.mc-s{font-size:10px;color:var(--tx3);margin-top:2px}
+.vd{border-radius:var(--rs);padding:.85rem 1rem;font-size:13px;line-height:1.6;margin-top:.75rem;display:none}
+.vd.d{background:#FCEBEB;color:#A32D2D}.vd.w{background:#FAEEDA;color:#854F0B}
+.vd.ok{background:#EAF3DE;color:#3B6D11}.vd.i{background:var(--ob-l);color:var(--ob-d)}
+.sr{display:flex;align-items:center;gap:12px;margin-bottom:.85rem}
+.sl{font-size:13px;color:var(--tx2);width:160px;flex-shrink:0}
+.sv{font-size:13px;font-weight:700;min-width:36px;text-align:right}
+input[type=range]{flex:1;accent-color:var(--ob);cursor:pointer}
+.note{font-size:11px;color:var(--tx3);margin-bottom:1rem;background:var(--surf2);border-radius:var(--rs);padding:.6rem .85rem;line-height:1.6}
+.btn-row{display:flex;gap:8px;margin-top:.5rem;flex-wrap:wrap}
+.btn{flex:1;min-width:120px;padding:.8rem;font-size:13px;font-weight:600;cursor:pointer;border-radius:var(--rs);border:none;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn:active{transform:scale(.98)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-p{background:var(--ob);color:#fff}.btn-p:hover{opacity:.88}
+.btn-s{background:var(--surf2);color:var(--tx2);border:0.5px solid var(--bdr)}.btn-s:hover{opacity:.7}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+.spin-d{width:14px;height:14px;border:2px solid var(--bdr);border-top-color:var(--tx2);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+.status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx3)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-live{background:#3B6D11;animation:pulse 2s ease-in-out infinite}
+.dot-err{background:#A32D2D}.dot-load{background:#854F0B}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.tab-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--bdr);background:var(--surf2);color:var(--tx2);transition:all .15s}
+.tab-btn.active{background:var(--ob);color:#fff;border-color:var(--ob)}
+.tab-c{display:none}.tab-c.on{display:block}
+.prob-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pn{font-size:13px;width:120px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbg{flex:1;height:8px;background:var(--surf2);border-radius:4px;overflow:hidden}
+.pf{height:100%;border-radius:4px;transition:width .5s ease}
+.pp{font-size:12px;color:var(--tx2);min-width:42px;text-align:right}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+th{text-align:left;font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;padding:5px 6px;border-bottom:0.5px solid var(--bdr)}
+td{padding:7px 6px;border-bottom:0.5px solid var(--bdr);color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr.ob-r td{background:var(--ob-l);color:var(--ob-d);font-weight:700}
+tr.div-r td{font-size:10px;color:var(--tx3);padding:3px 6px;border-bottom:none}
+.lgd{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--tx2);margin:8px 0 1rem}
+.lgd span{display:flex;align-items:center;gap:5px}
+.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+footer{text-align:center;font-size:11px;color:var(--tx3);margin-top:2rem;line-height:1.9}
+footer a{color:var(--ob);text-decoration:none}footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>3F Superliga simulator</h1>
+<div class="sub">
+  Sæson 2026/27 · Monte Carlo · 10.000 simuleringer
+  <span class="status">
+    <span class="dot dot-load" id="sdot"></span>
+    <span id="stxt">Henter live data fra Wikipedia…</span>
+  </span>
+</div>
+
+<div class="card ob-hl">
+  <div class="ob-hdr">
+    <div class="av">OB</div>
+    <div>
+      <div style="font-size:17px;font-weight:700">Odense Boldklub</div>
+      <div style="font-size:13px;color:var(--tx2)">Træner: Zorniger · Kaptajn: Rasmus Falk</div>
+    </div>
+    <div style="margin-left:auto;text-align:right">
+      <div style="font-size:11px;color:var(--tx3)">Titelchance</div>
+      <div style="font-size:26px;font-weight:700;color:var(--ob)" id="ob-pct">—</div>
+    </div>
+  </div>
+  <div class="mg">
+    <div class="mc"><div class="mc-l">Forv. point</div><div class="mc-v" id="m-pts">—</div><div class="mc-s">38 runder</div></div>
+    <div class="mc"><div class="mc-l">Forv. mål for</div><div class="mc-v" id="m-gf">—</div><div class="mc-s">sæsonen</div></div>
+    <div class="mc"><div class="mc-l">Forv. placering</div><div class="mc-v" id="m-pos">—</div><div class="mc-s">grundspil</div></div>
+    <div class="mc"><div class="mc-l">Top-6 chance</div><div class="mc-v" id="m-top6">—</div><div class="mc-s">mesterskabsspil</div></div>
+  </div>
+  <div id="vd" class="vd i"></div>
+</div>
+
+<div class="card">
+  <div class="lbl">Juster OB's parametre for 2026/27</div>
+  <div class="note" id="note">Henter stillings-data…</div>
+  <div class="sr"><span class="sl">Angrebsstyrke</span><input type="range" id="s-att" min="40" max="95" value="63" step="1"><span class="sv" id="v-att">63</span></div>
+  <div class="sr"><span class="sl">Forsvarsstyrke</span><input type="range" id="s-def" min="30" max="95" value="37" step="1"><span class="sv" id="v-def">37</span></div>
+  <div class="sr"><span class="sl">Boldbesiddelse (%)</span><input type="range" id="s-pos" min="35" max="70" value="52" step="1"><span class="sv" id="v-pos">52</span></div>
+  <div class="sr"><span class="sl">Hjemmefordel</span><input type="range" id="s-hm" min="0" max="30" value="11" step="1"><span class="sv" id="v-hm">11</span></div>
+  <div class="sr"><span class="sl">Formvariation</span><input type="range" id="s-var" min="5" max="40" value="20" step="1"><span class="sv" id="v-var">20</span></div>
+  <div class="btn-row">
+    <button class="btn btn-p" id="run-btn" onclick="runSim()">▶ Kør simulation</button>
+    <button class="btn btn-s" id="ref-btn" onclick="loadData()">↻ Hent ny data</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="tab('titel',this)">Titelchancer</button>
+  <button class="tab-btn" onclick="tab('stilling',this)">Forventet stilling</button>
+  <button class="tab-btn" onclick="tab('maal',this)">Mål-diagram</button>
+  <button class="tab-btn" onclick="tab('live',this)">Live data</button>
+</div>
+
+<div id="tab-titel" class="tab-c on card">
+  <div class="lbl">Titelchance — alle hold</div>
+  <div id="prob-bars"></div>
+</div>
+<div id="tab-stilling" class="tab-c card">
+  <div class="lbl">Forventet stilling — grundspil (gennemsnit af 10.000 sæsoner)</div>
+  <div class="tw"><table><thead><tr>
+    <th style="width:24px">#</th><th>Hold</th><th style="width:34px">Pt</th>
+    <th style="width:34px">MF</th><th style="width:34px">MI</th>
+    <th style="width:42px">MD</th><th style="width:52px">Titel%</th>
+  </tr></thead><tbody id="tbody"></tbody></table></div>
+</div>
+<div id="tab-maal" class="tab-c card">
+  <div class="lbl">Forventede mål for og imod</div>
+  <div class="lgd">
+    <span><span class="ld" style="background:#185FA5"></span>OB mål for</span>
+    <span><span class="ld" style="background:#B4B2A9"></span>Andre mål for</span>
+    <span><span class="ld" style="background:#85B7EB"></span>OB mål imod</span>
+    <span><span class="ld" style="background:#D3D1C7"></span>Andre mål imod</span>
+  </div>
+  <div style="position:relative;width:100%;height:320px">
+    <canvas id="chart" role="img" aria-label="Mål per hold">Kør simulation først.</canvas>
+  </div>
+</div>
+<div id="tab-live" class="tab-c card">
+  <div class="lbl">Aktuel stillings-data fra Wikipedia</div>
+  <div class="tw"><table><thead><tr>
+    <th style="width:24px">#</th><th>Hold</th>
+    <th style="width:34px">Sp</th><th style="width:34px">Pt</th>
+    <th style="width:34px">MF</th><th style="width:34px">MI</th>
+    <th style="width:44px">Angr.</th><th style="width:44px">Forv.</th>
+  </tr></thead><tbody id="live-tbody"></tbody></table></div>
+  <p id="live-src" style="font-size:11px;color:var(--tx3);margin-top:.75rem"></p>
+</div>
+
+<footer>
+  <p>Data: <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Danish_Superliga" target="_blank">Wikipedia — 2025–26 Danish Superliga</a> · opdateres typisk inden for timer efter en kamp</p>
+  <p>Simulation: Monte Carlo med Poisson-fordeling · 10.000 sæsoner per kørsel</p>
+  <p style="margin-top:.4rem;color:var(--tx3)">Lavet med ♥ til svogeren 🎂</p>
+</footer>
+</div>
+
+<script>
+// ── Farver og fallback ────────────────────────────────────────────────────
+const COLORS = {
+  agf:'#639922', midtjylland:'#378ADD', sønderjyske:'#EF9F27', sonderjyske:'#EF9F27',
+  brøndby:'#D85A30', brondby:'#D85A30', viborg:'#7F77DD',
+  nordsjælland:'#1D9E75', nordsjaelland:'#1D9E75',
+  københavn:'#888780', kobenhavn:'#888780', copenhagen:'#888780',
+  ob:'#185FA5', odense:'#185FA5',
+  randers:'#BA7517', fredericia:'#D4537E',
+  silkeborg:'#5F5E5A', vejle:'#B4B2A9',
+};
+const DEF_COLORS=['#639922','#378ADD','#EF9F27','#D85A30','#7F77DD','#1D9E75',
+                  '#888780','#185FA5','#BA7517','#D4537E','#5F5E5A','#B4B2A9'];
+const FALLBACK=[
+  {name:'AGF',         att:83,def:82,pos:53,color:'#639922',gf:46,ga:23,pts:50,pld:22},
+  {name:'Midtjylland', att:86,def:83,pos:55,color:'#378ADD',gf:58,ga:23,pts:46,pld:22},
+  {name:'Sønderjyske', att:67,def:71,pos:48,color:'#EF9F27',gf:34,ga:28,pts:36,pld:22},
+  {name:'Brøndby',     att:70,def:80,pos:52,color:'#D85A30',gf:31,ga:22,pts:34,pld:22},
+  {name:'Viborg',      att:69,def:67,pos:50,color:'#7F77DD',gf:37,ga:35,pts:33,pld:22},
+  {name:'Nordsjælland',att:70,def:60,pos:57,color:'#1D9E75',gf:37,ga:39,pts:31,pld:22},
+  {name:'Copenhagen',  att:77,def:75,pos:55,color:'#888780',gf:35,ga:34,pts:29,pld:22},
+  {name:'OB',          att:63,def:37,pos:52,color:'#185FA5',gf:36,ga:46,pts:27,pld:22},
+  {name:'Randers',     att:55,def:63,pos:47,color:'#BA7517',gf:22,ga:27,pts:26,pld:22},
+  {name:'Fredericia',  att:59,def:49,pos:45,color:'#D4537E',gf:30,ga:49,pts:24,pld:22},
+  {name:'Silkeborg',   att:57,def:56,pos:53,color:'#5F5E5A',gf:24,ga:45,pts:19,pld:22},
+  {name:'Vejle',       att:49,def:47,pos:46,color:'#B4B2A9',gf:26,ga:45,pts:14,pld:22},
+];
+
+function teamColor(name, i) {
+  const n = name.toLowerCase()
+    .replace(/æ/g,'ae').replace(/ø/g,'o').replace(/å/g,'a')
+    .replace(/\bfc\b|\bif\b|\bff\b|\bfk\b/g,'').trim();
+  const key = Object.keys(COLORS).find(k => n.includes(k) || k.includes(n.split(' ')[0]));
+  return key ? COLORS[key] : DEF_COLORS[i % DEF_COLORS.length];
+}
+function isOB(name) {
+  const n = name.toLowerCase().trim();
+  return n === 'ob' || n.startsWith('ob ') || n.includes('odense');
+}
+function calcStrength(gf, ga, pld) {
+  const p = Math.max(pld, 1);
+  return {
+    att: Math.min(95, Math.max(30, Math.round(20 + (gf/p) * 30))),
+    def: Math.min(92, Math.max(28, Math.round(90 - (ga/p) * 26))),
+  };
+}
+
+// ── State ─────────────────────────────────────────────────────────────────
+let TEAMS=[], OB_IDX=7, goalsChart=null;
+
+['att','def','pos','hm','var'].forEach(id => {
+  document.getElementById('s-'+id).addEventListener('input',()=>{
+    document.getElementById('v-'+id).textContent=document.getElementById('s-'+id).value;
+  });
+});
+function tab(id,btn){
+  document.querySelectorAll('.tab-c').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('on'); btn.classList.add('active');
+}
+function setStatus(state,txt){
+  document.getElementById('sdot').className='dot dot-'+state;
+  document.getElementById('stxt').textContent=txt;
+}
+
+// ── Wikipedia parser ───────────────────────────────────────────────────────
+// Wikipedia's action=parse API supports CORS via origin=* (documented at mediawiki.org/wiki/API:Cross-site_requests)
+// We fetch the rendered HTML and parse the league table from it.
+
+function parseStandingsFromHTML(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // Helper: get clean text from a cell
+  function cellText(cell) {
+    return cell.textContent
+      .replace(/\u2212/g, '-')   // Unicode minus → ASCII
+      .replace(/\[.*?\]/g, '')   // remove [a] footnotes
+      .replace(/\(.*?\)/g, '')   // remove (C) (R) (P) markers
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  const tables = doc.querySelectorAll('table');
+  for (const table of tables) {
+    const rows = Array.from(table.querySelectorAll('tr'));
+    const teams = [];
+
+    for (const row of rows) {
+      const tds = Array.from(row.querySelectorAll('td'));
+      // Need at least 10 cells: pos, team, pld, w, d, l, gf, ga, gd, pts
+      if (tds.length < 10) continue;
+
+      const vals = tds.map(cellText);
+
+      // Cell 0: position (1–16)
+      const pos = parseInt(vals[0]);
+      if (isNaN(pos) || pos < 1 || pos > 16) continue;
+
+      // Cell 1: team name
+      const name = vals[1].trim();
+      if (!name || name.length < 2) continue;
+
+      // Cells 2–9: pld, w, d, l, gf, ga, gd, pts
+      const pld = parseInt(vals[2]);
+      const gf  = parseInt(vals[6]);
+      const ga  = parseInt(vals[7]);
+      const pts = parseInt(vals[9]);
+
+      if ([pld, gf, ga, pts].some(isNaN)) continue;
+      if (pld < 1 || gf < 0 || ga < 0 || pts < 0) continue;
+
+      const {att, def} = calcStrength(gf, ga, pld);
+      teams.push({
+        name, pld, gf, ga, pts, att, def,
+        pos: 50, // boldbesiddelse default
+        color: teamColor(name, teams.length),
+      });
+    }
+
+    if (teams.length >= 8) {
+      return teams.sort((a,b) => b.pts - a.pts || (b.gf-b.ga)-(a.gf-a.ga));
+    }
+  }
+  return null;
+}
+
+async function fetchWikipedia() {
+  // Fetch the full page rendered HTML — origin=* enables CORS
+  const url = 'https://en.wikipedia.org/w/api.php'
+    + '?action=parse'
+    + '&page=2025%E2%80%9326_Danish_Superliga'
+    + '&format=json'
+    + '&prop=text'
+    + '&origin=*';
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Wikipedia HTTP ' + res.status);
+
+  const data = await res.json();
+  if (data.error) throw new Error('Wikipedia: ' + data.error.info);
+
+  const html = data?.parse?.text?.['*'];
+  if (!html) throw new Error('Wikipedia: tomt svar');
+
+  const teams = parseStandingsFromHTML(html);
+  if (!teams || teams.length < 8) throw new Error('Stillings-tabel ikke fundet i siden');
+
+  return teams;
+}
+
+// ── Load data ──────────────────────────────────────────────────────────────
+async function loadData() {
+  const btn = document.getElementById('ref-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin-d"></span> Henter…';
+  setStatus('load', 'Henter fra Wikipedia…');
+
+  try {
+    const teams = await fetchWikipedia();
+    const obIdx = teams.findIndex(t => isOB(t.name));
+    if (obIdx < 0) throw new Error('OB ikke fundet i tabellen');
+
+    TEAMS = teams;
+    OB_IDX = obIdx;
+
+    // Sæt OB's slidere fra live data
+    document.getElementById('s-att').value = TEAMS[OB_IDX].att;
+    document.getElementById('v-att').textContent = TEAMS[OB_IDX].att;
+    document.getElementById('s-def').value = TEAMS[OB_IDX].def;
+    document.getElementById('v-def').textContent = TEAMS[OB_IDX].def;
+
+    const now = new Date().toLocaleString('da-DK',
+      {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    setStatus('live', `Live · Wikipedia · ${now}`);
+    document.getElementById('note').textContent =
+      `Live data fra Wikipedia (${now}) — ${teams.length} hold hentet · OB's styrkeværdier sat automatisk`;
+    renderLiveTable(TEAMS, OB_IDX, now);
+    runSim();
+
+  } catch(e) {
+    console.warn('Wikipedia fejl:', e.message);
+    setStatus('err', 'Wikipedia fejl · bruger FotMob 2025/26');
+    document.getElementById('note').textContent =
+      `Wikipedia ikke tilgængelig (${e.message}) · Bruger FotMob 2025/26-data`;
+    if (!TEAMS.length) {
+      TEAMS = FALLBACK.map(t=>({...t}));
+      OB_IDX = TEAMS.findIndex(t=>t.name==='OB');
+      renderLiveTable(TEAMS, OB_IDX, 'FotMob 2025/26 (offline)');
+      runSim();
+    }
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '↻ Hent ny data';
+}
+
+function renderLiveTable(teams, obIdx, src) {
+  document.getElementById('live-tbody').innerHTML = teams.map((t,i) =>
+    `<tr class="${i===obIdx?'ob-r':''}">
+      <td>${i+1}</td><td>${t.name}${i===obIdx?' ★':''}</td>
+      <td>${t.pld}</td><td><strong>${t.pts}</strong></td>
+      <td>${t.gf}</td><td>${t.ga}</td>
+      <td>${t.att}</td><td>${t.def}</td>
+    </tr>`
+  ).join('');
+  document.getElementById('live-src').textContent =
+    `Hentet: ${src} · Angr./Forv. = styrkeværdier (0–100) beregnet fra mål scored/indkasseret`;
+}
+
+// ── Monte Carlo ────────────────────────────────────────────────────────────
+function poisson(lam){
+  let L=Math.exp(-lam),p=1,k=0;
+  do{k++;p*=Math.random();}while(p>L);
+  return k-1;
+}
+function simMatch(ai,di,pi,aj,dj,pj,hm,variance){
+  const n=()=>(Math.random()+Math.random()+Math.random()-1.5)/1.5;
+  const pAdv=(pi-pj)/200;
+  const lA=Math.max(0.15,((ai/100)*(1-dj/150)+pAdv)*(1+hm/100)*(1+n()*variance/100)*2.2);
+  const lB=Math.max(0.15,((aj/100)*(1-di/150)-pAdv)*(1+n()*variance/100)*2.2);
+  return[poisson(lA),poisson(lB)];
+}
+
+function runSim(){
+  if(!TEAMS.length)return;
+  const btn=document.getElementById('run-btn');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Simulerer…';
+  setTimeout(()=>{
+    const p={
+      att:+document.getElementById('s-att').value,
+      def:+document.getElementById('s-def').value,
+      pos:+document.getElementById('s-pos').value,
+      hm: +document.getElementById('s-hm').value,
+      var:+document.getElementById('s-var').value,
+    };
+    const N=10000,T=TEAMS.length;
+    const tw=new Array(T).fill(0),ptA=new Array(T).fill(0);
+    const gfA=new Array(T).fill(0),gaA=new Array(T).fill(0);
+    const posA=new Array(T).fill(0),t6A=new Array(T).fill(0);
+
+    for(let s=0;s<N;s++){
+      const pts=new Array(T).fill(0),gf=new Array(T).fill(0),ga=new Array(T).fill(0);
+      for(let i=0;i<T;i++) for(let j=0;j<T;j++){
+        if(i===j)continue;
+        const ai=i===OB_IDX?p.att:TEAMS[i].att, di=i===OB_IDX?p.def:TEAMS[i].def, pi=i===OB_IDX?p.pos:TEAMS[i].pos;
+        const aj=j===OB_IDX?p.att:TEAMS[j].att, dj=j===OB_IDX?p.def:TEAMS[j].def, pj=j===OB_IDX?p.pos:TEAMS[j].pos;
+        const[gi,gj]=simMatch(ai,di,pi,aj,dj,pj,p.hm,p.var);
+        gf[i]+=gi;ga[i]+=gj;gf[j]+=gj;ga[j]+=gi;
+        if(gi>gj)pts[i]+=3;else if(gi===gj){pts[i]++;pts[j]++;}else pts[j]+=3;
+      }
+      const sorted=[...Array(T).keys()].sort((a,b)=>pts[b]!==pts[a]?pts[b]-pts[a]:(gf[b]-ga[b])-(gf[a]-ga[a]));
+      sorted.forEach((idx,r)=>posA[idx]+=r+1);
+      const top6=sorted.slice(0,6);
+      top6.forEach(idx=>t6A[idx]++);
+      const cP={},cGf={},cGa={};
+      top6.forEach(idx=>{cP[idx]=pts[idx];cGf[idx]=gf[idx];cGa[idx]=ga[idx];});
+      for(let ii=0;ii<6;ii++) for(let jj=0;jj<6;jj++){
+        if(ii===jj)continue;
+        const i=top6[ii],j=top6[jj];
+        const ai=i===OB_IDX?p.att:TEAMS[i].att,di=i===OB_IDX?p.def:TEAMS[i].def,pi=i===OB_IDX?p.pos:TEAMS[i].pos;
+        const aj=j===OB_IDX?p.att:TEAMS[j].att,dj=j===OB_IDX?p.def:TEAMS[j].def,pj=j===OB_IDX?p.pos:TEAMS[j].pos;
+        const[gi,gj]=simMatch(ai,di,pi,aj,dj,pj,p.hm,p.var);
+        cGf[i]=(cGf[i]||0)+gi;cGa[i]=(cGa[i]||0)+gj;
+        cGf[j]=(cGf[j]||0)+gj;cGa[j]=(cGa[j]||0)+gi;
+        if(gi>gj)cP[i]=(cP[i]||0)+3;
+        else if(gi===gj){cP[i]=(cP[i]||0)+1;cP[j]=(cP[j]||0)+1;}
+        else cP[j]=(cP[j]||0)+3;
+      }
+      const champ=[...top6].sort((a,b)=>cP[b]!==cP[a]?cP[b]-cP[a]:(cGf[b]-cGa[b])-(cGf[a]-cGa[a]))[0];
+      tw[champ]++;
+      pts.forEach((v,i)=>{ptA[i]+=v;gfA[i]+=gf[i];gaA[i]+=ga[i];});
+    }
+
+    const tp=tw.map(w=>w/N*100);
+    const avgPt=ptA.map(v=>(v/N).toFixed(1));
+    const avgGf=gfA.map(v=>Math.round(v/N));
+    const avgGa=gaA.map(v=>Math.round(v/N));
+    const avgPos=posA.map(v=>(v/N).toFixed(1));
+    const t6p=t6A.map(v=>(v/N*100).toFixed(1));
+
+    document.getElementById('ob-pct').textContent=tp[OB_IDX].toFixed(1)+'%';
+    document.getElementById('m-pts').textContent=Math.round(parseFloat(avgPt[OB_IDX]));
+    document.getElementById('m-gf').textContent=avgGf[OB_IDX];
+    document.getElementById('m-pos').textContent=avgPos[OB_IDX]+'.';
+    document.getElementById('m-top6').textContent=t6p[OB_IDX]+'%';
+
+    const vd=document.getElementById('vd'); vd.style.display='block';
+    const obPos=parseFloat(avgPos[OB_IDX]);
+    if(tp[OB_IDX]>12){vd.className='vd ok';vd.innerHTML='<strong>OB er titelkandidat!</strong> Det her er det Zorniger drømmer om.';}
+    else if(tp[OB_IDX]>4){vd.className='vd i';vd.innerHTML='<strong>OB er med i kampen.</strong> Top-6 i '+t6p[OB_IDX]+'% af simuleringer. Transfervinduet kan rykke det yderligere.';}
+    else if(obPos<=6){vd.className='vd w';vd.innerHTML='<strong>OB når typisk mesterskabsslutspillet</strong> ('+t6p[OB_IDX]+'%), men titlen kræver bedre forsvar end '+p.def+'.';}
+    else{vd.className='vd d';vd.innerHTML='<strong>OB ender sandsynligvis i nedrykningsspillet igen.</strong> Forsvar på '+p.def+' er for svagt — skru op og se hvad der skal til.';}
+
+    const byTitle=[...Array(T).keys()].sort((a,b)=>tp[b]-tp[a]);
+    const maxTP=Math.max(...tp);
+    document.getElementById('prob-bars').innerHTML=byTitle.map(idx=>{
+      const isOB=idx===OB_IDX;
+      return`<div class="prob-row">
+        <span class="pn" style="font-weight:${isOB?700:400};color:${isOB?'var(--ob-d)':'var(--tx)'}">${TEAMS[idx].name}${isOB?' ★':''}</span>
+        <div class="pbg"><div class="pf" style="width:${maxTP>0?(tp[idx]/maxTP*100).toFixed(1):0}%;background:${TEAMS[idx].color}"></div></div>
+        <span class="pp">${tp[idx].toFixed(1)}%</span>
+      </div>`;
+    }).join('');
+
+    const byPts=[...Array(T).keys()].sort((a,b)=>parseFloat(avgPt[b])-parseFloat(avgPt[a]));
+    let divDone=false;
+    document.getElementById('tbody').innerHTML=byPts.map((idx,rank)=>{
+      let div='';
+      if(rank===6&&!divDone){divDone=true;div=`<tr class="div-r"><td colspan="7">── nedrykningsspil ──</td></tr>`;}
+      const isOB=idx===OB_IDX,md=avgGf[idx]-avgGa[idx];
+      return div+`<tr class="${isOB?'ob-r':''}">
+        <td>${rank+1}</td><td>${TEAMS[idx].name}${isOB?' ★':''}</td>
+        <td><strong>${Math.round(parseFloat(avgPt[idx]))}</strong></td>
+        <td>${avgGf[idx]}</td><td>${avgGa[idx]}</td>
+        <td>${(md>=0?'+':'')+md}</td>
+        <td style="color:var(--tx2)">${tp[idx].toFixed(1)}%</td>
+      </tr>`;
+    }).join('');
+
+    if(goalsChart)goalsChart.destroy();
+    goalsChart=new Chart(document.getElementById('chart'),{
+      type:'bar',
+      data:{labels:byPts.map(i=>TEAMS[i].name),datasets:[
+        {label:'Mål for', data:byPts.map(i=>avgGf[i]),backgroundColor:byPts.map(i=>i===OB_IDX?'#185FA5':'#B4B2A9'),borderWidth:0},
+        {label:'Mål imod',data:byPts.map(i=>avgGa[i]),backgroundColor:byPts.map(i=>i===OB_IDX?'#85B7EB':'#D3D1C7'),borderWidth:0},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{ticks:{autoSkip:false,maxRotation:45,font:{size:11}}},
+                y:{title:{display:true,text:'Forventede mål (sæson)',font:{size:11}}}}}
+    });
+
+    btn.disabled=false; btn.innerHTML='↺ Kør ny simulation';
+  },30);
+}
+
+loadData();
+</script>
+</body>
+</html>
