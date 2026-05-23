@@ -440,12 +440,27 @@ async function loadData(){
   btn.disabled=true;btn.innerHTML='<span class="spin-d"></span> Henter…';
   let teams=null,source='';
 
-  // Source 1: SuperStats.dk stilling
+  // Source 1: SuperStats.dk via CORS proxy
   setStatus('load','Henter fra SuperStats.dk…');
   try{
-    const res=await fetch('https://superstats.dk/stilling/');
-    if(!res.ok)throw new Error('SuperStats stilling '+res.status);
-    const html=await res.text();
+    const target=encodeURIComponent('https://superstats.dk/stilling/');
+    const proxies=[
+      `https://api.allorigins.win/get?url=${target}`,
+      `https://api.codetabs.com/v1/proxy?quest=https://superstats.dk/stilling/`,
+      `https://corsproxy.io/?url=${target}`,
+    ];
+    let html=null;
+    for(const proxy of proxies){
+      try{
+        const r=await fetch(proxy);
+        if(!r.ok)continue;
+        const d=await r.json().catch(()=>null);
+        if(d?.contents){html=d.contents;break;} // allorigins format
+        const t=await r.text().catch(()=>null);
+        if(t&&t.includes('<table')){html=t;break;} // codetabs/corsproxy format
+      }catch(e){continue;}
+    }
+    if(!html)throw new Error('Alle CORS proxies fejlede');
     teams=parseSuperstatsStilling(html);
     if(!teams||teams.length<6)throw new Error('Ingen holddata fundet');
     source='SuperStats.dk';
@@ -453,9 +468,13 @@ async function loadData(){
 
     // Also fetch OB's own page for home/away + detailed form
     try{
-      const obRes=await fetch('https://superstats.dk/hold/sason?id=7&vis=overblik&aar=2025%2F2026');
+      const obTarget=encodeURIComponent('https://superstats.dk/hold/sason?id=7&vis=overblik&aar=2025%2F2026');
+      const obRes=await fetch(`https://api.allorigins.win/get?url=${obTarget}`).then(async r=>{
+        const d=await r.json().catch(()=>null);
+        return d?.contents?new Response(d.contents,{status:200}):new Response('',{status:500});
+      }).catch(()=>new Response('',{status:500}));
       if(obRes.ok){
-        const obHtml=await obRes.text();
+        const obHtml=obRes.ok?await obRes.text():'';
         const splits=parseOBSplits(obHtml);
         const obIdx=teams.findIndex(t=>isOB(t.name));
         if(obIdx>=0){
