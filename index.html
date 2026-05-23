@@ -259,14 +259,24 @@ footer a{color:var(--ob-mid);text-decoration:none}
         </div>
       </div>
       <div class="ob-grid">
-        <div class="ob-stat"><div class="ob-stat-l">Kampe</div><div class="ob-stat-v" id="ob-pld">—</div></div>
-        <div class="ob-stat"><div class="ob-stat-l">Point</div><div class="ob-stat-v" id="ob-pts">—</div></div>
-        <div class="ob-stat"><div class="ob-stat-l">Mål for</div><div class="ob-stat-v" id="ob-gf">—</div></div>
-        <div class="ob-stat"><div class="ob-stat-l">Mål imod</div><div class="ob-stat-v" id="ob-ga">—</div></div>
-        <div class="ob-stat"><div class="ob-stat-l">S · U · T</div><div class="ob-stat-v" id="ob-wdl">—</div></div>
-        <div class="ob-stat"><div class="ob-stat-l">Topscorer</div><div class="ob-stat-v" style="font-size:13px">Noah Ganaus</div><div class="ob-stat-s">9 mål</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Kampe i alt</div><div class="ob-stat-v" id="ob-pld">—</div><div class="ob-stat-s">Liga + Pokal</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Ligapoint</div><div class="ob-stat-v" id="ob-pts">—</div><div class="ob-stat-s">Superliga</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Mål for i alt</div><div class="ob-stat-v" id="ob-gf">—</div><div class="ob-stat-s">Liga + Pokal</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Mål imod i alt</div><div class="ob-stat-v" id="ob-ga">—</div><div class="ob-stat-s">Liga + Pokal</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">S · U · T</div><div class="ob-stat-v" id="ob-wdl">—</div><div class="ob-stat-s">Samlet</div></div>
+        <div class="ob-stat"><div class="ob-stat-l">Topscorer</div><div class="ob-stat-v" style="font-size:13px">Noah Ganaus</div><div class="ob-stat-s">12 mål total</div></div>
       </div>
       <div class="ob-verdict" id="ob-verdict">Henter sæsondata…</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+        <div style="background:rgba(255,255,255,.1);border-radius:var(--rs);padding:.5rem .8rem">
+          <div style="font-size:10px;opacity:.55;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">Superliga</div>
+          <div style="font-size:12px;font-weight:600" id="ob-liga-line">—</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);border-radius:var(--rs);padding:.5rem .8rem">
+          <div style="font-size:10px;opacity:.55;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">DBU Pokalen</div>
+          <div style="font-size:12px;font-weight:600">3V 0U 1T · 7-2 mål · Kvartfinale</div>
+        </div>
+      </div>
     </div>
 
     <button class="refresh-btn" id="rb1" onclick="loadData()">↻ Opdater med nyeste data</button>
@@ -740,11 +750,14 @@ function renderKampListe(){
 function renderOBStats(teams,obIdx){
   const ob=teams[obIdx],rank=obIdx+1;
   document.getElementById('ob-rank').textContent=rank+'.';
-  document.getElementById('ob-pld').textContent=ob.pld;
+  // Combined stats (Liga + Pokalen)
+  const POKAL={k:4,v:3,u:0,t:1,gf:7,ga:2}; // R3 0-3, R4 0-3, QF1 1-0, QF2 lost (AGF 2-0)
+  document.getElementById('ob-pld').textContent=ob.pld+POKAL.k;
+  document.getElementById('ob-gf').textContent=ob.gf+POKAL.gf;
+  document.getElementById('ob-ga').textContent=ob.ga+POKAL.ga;
   document.getElementById('ob-pts').textContent=ob.pts;
-  document.getElementById('ob-gf').textContent=ob.gf;
-  document.getElementById('ob-ga').textContent=ob.ga;
   document.getElementById('ob-wdl').textContent=`${ob.w}·${ob.d}·${ob.l}`;
+  document.getElementById('ob-liga-line').textContent=`${ob.pld}K · ${ob.w}S ${ob.d}U ${ob.l}T · ${ob.gf}-${ob.ga} mål · ${ob.pts}pt`;
   const gd=ob.gf-ob.ga,gpg=(ob.gf/Math.max(ob.pld,1)).toFixed(2),cgpg=(ob.ga/Math.max(ob.pld,1)).toFixed(2);
   document.getElementById('ob-verdict').textContent=
     rank<=6?`💙 Stærk comeback-sæson! OB sluttede på ${rank}. plads med ${ob.pts} point og nåede mesterskabsspillet.`
