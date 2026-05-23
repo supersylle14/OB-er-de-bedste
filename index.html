@@ -233,7 +233,7 @@ footer a{color:var(--ob-mid);text-decoration:none}footer a:hover{text-decoration
 </div>
 
 <footer>
-  <p>Data: <a href="https://www.thesportsdb.com" target="_blank">TheSportsDB</a> (primær) · <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Danish_Superliga" target="_blank">Wikipedia</a> (fallback)</p>
+  <p>Data: <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Danish_Superliga" target="_blank">Wikipedia — 2025–26 Danish Superliga</a> · opdateres typisk inden for timer efter en kamp</p>
   <p>Simulation: Monte Carlo · Poisson-fordeling · 10.000 sæsoner per kørsel</p>
   <p style="margin-top:.4rem;color:#b8cfe0">OB er de bedste 💙</p>
 </footer>
@@ -347,22 +347,59 @@ async function fetchTheSportsDB(){
 function parseWikiHTML(html){
   const parser=new DOMParser();
   const doc=parser.parseFromString(html,'text/html');
+  
+  // Collect teams from ALL tables - handles both regular season (12 teams)
+  // and playoff phase (two tables of 6 teams each)
+  const allTeams=[];
+  const seenNames=new Set();
+  
   for(const table of doc.querySelectorAll('table')){
     const rows=Array.from(table.querySelectorAll('tr'));
-    const teams=[];
     for(const row of rows){
       const cells=Array.from(row.querySelectorAll('td, th'));
-      if(cells.length<10)continue;
-      const v=cells.map(c=>c.textContent.replace(/\u2212/g,'-').replace(/\[.*?\]/g,'').replace(/\(.*?\)/g,'').trim());
+      if(cells.length<8)continue;
+      const v=cells.map(c=>c.textContent
+        .replace(/\u2212/g,'-').replace(/\[.*?\]/g,'')
+        .replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim());
+      
+      // First cell: position number 1-16
       const pos=parseInt(v[0]);
       if(isNaN(pos)||pos<1||pos>16)continue;
-      const name=v[1];if(!name||name.length<2)continue;
-      const pld=parseInt(v[2]),gf=parseInt(v[6]),ga=parseInt(v[7]),pts=parseInt(v[9]);
-      if([pld,gf,ga,pts].some(isNaN)||pld<1)continue;
+      
+      // Second cell: team name
+      const name=v[1];
+      if(!name||name.length<2)continue;
+      if(seenNames.has(name))continue; // skip duplicates across tables
+      
+      // Find numeric stats - pld is v[2], then w,d,l,gf,ga
+      const pld=parseInt(v[2]);
+      if(isNaN(pld)||pld<1)continue;
+      
+      // Goals: try positions 6,7 first; if not numeric try 4,5
+      let gf=parseInt(v[6]),ga=parseInt(v[7]);
+      if(isNaN(gf)||isNaN(ga)){gf=parseInt(v[4]);ga=parseInt(v[5]);}
+      if(isNaN(gf)||isNaN(ga))continue;
+      
+      // Points: last numeric cell
+      let pts=NaN;
+      for(let i=cells.length-1;i>=6;i--){
+        const n=parseInt(v[i]);
+        if(!isNaN(n)&&n>=0&&n<=150){pts=n;break;}
+      }
+      if(isNaN(pts))continue;
+      
+      // wins/draws/losses
+      const w=parseInt(v[3])||0,d=parseInt(v[4])||0,l=parseInt(v[5])||0;
+      
       const {att,def}=calcStr(gf,ga,pld);
-      teams.push({name,pld,gf,ga,pts,w:0,d:0,l:0,att,def,pos:50,color:teamColor(name,teams.length),form:[]});
+      seenNames.add(name);
+      allTeams.push({name,pld,gf,ga,pts,w,d,l,att,def,pos:50,
+                     color:teamColor(name,allTeams.length),form:[]});
     }
-    if(teams.length>=8)return teams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
+  }
+  
+  if(allTeams.length>=6){
+    return allTeams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
   }
   return null;
 }
@@ -384,23 +421,14 @@ async function loadData(){
 
   let teams=null,source='';
 
-  // Try TheSportsDB first
-  setStatus('load','Henter fra TheSportsDB…');
+  // Try Wikipedia (primary - open CORS, free, no key needed)
+  setStatus('load','Henter fra Wikipedia…');
   try{
-    teams=await fetchTheSportsDB();
-    source='TheSportsDB';
-    console.log('TheSportsDB OK:',teams.length,'hold');
+    teams=await fetchWikipedia();
+    source='Wikipedia';
+    console.log('Wikipedia OK:',teams.length,'hold');
   }catch(e){
-    console.warn('TheSportsDB fejl:',e.message);
-    // Try Wikipedia fallback
-    setStatus('load','TheSportsDB fejlede · prøver Wikipedia…');
-    try{
-      teams=await fetchWikipedia();
-      source='Wikipedia';
-      console.log('Wikipedia OK:',teams.length,'hold');
-    }catch(e2){
-      console.warn('Wikipedia fejl:',e2.message);
-    }
+    console.warn('Wikipedia fejl:',e.message);
   }
 
   if(teams&&teams.length>=8){
