@@ -221,6 +221,12 @@ footer a{color:var(--ob-mid);text-decoration:none}
   .sub-tab{padding:4px 8px;font-size:10px}
   .kamp-hold em{display:none}
 }
+.ss-archive{background:#f0f0f0 !important;color:#888 !important}
+.ss-archive .ss-year{color:#888}
+.ss-archive .ss-label{color:#aaa}
+.ss-archive.active{background:#888 !important;color:#fff !important}
+.ss-archive.active .ss-year{color:#fff}
+.ss-archive.active .ss-label{color:rgba(255,255,255,.7)}
 @supports(-webkit-touch-callout:none){
   .wrap{padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
 }
@@ -244,20 +250,20 @@ footer a{color:var(--ob-mid);text-decoration:none}
 
 <!-- Sæson switcher -->
 <div class="season-switcher">
-  <button class="ss-btn active" onclick="switchSeason('2526',this)">
-    <span class="ss-year">2025/26</span>
-    <span class="ss-label">Afsluttet sæson</span>
-  </button>
-  <button class="ss-btn" onclick="switchSeason('2627',this)">
+  <button class="ss-btn active" id="btn-2627" onclick="switchSeason('2627',this)" style="flex:3">
     <span class="ss-year">2026/27</span>
-    <span class="ss-label">Kommende sæson</span>
+    <span class="ss-label">⚽ Igangværende sæson</span>
+  </button>
+  <button class="ss-btn ss-archive" id="btn-2526" onclick="switchSeason('2526',this)" style="flex:1">
+    <span class="ss-year">2025/26</span>
+    <span class="ss-label">📁 Arkiv</span>
   </button>
 </div>
 
 <!-- ══════════════════════════════════════════════════
      SÆSON 2025/26
 ══════════════════════════════════════════════════ -->
-<div id="s-2526" class="season on">
+<div id="s-2526" class="season">
 
   <div class="sub-tabs">
     <button class="sub-tab active" onclick="subTab('2526','ob',this)">OB Stats</button>
@@ -273,7 +279,7 @@ footer a{color:var(--ob-mid);text-decoration:none}
         <img class="ob-logo" src="https://cde-ob-cms-prod.azureedge.net/media/hj2fqd00/ob_logo_rgb_blaa.png?width=200" alt="OB">
         <div class="ob-info">
           <h2>Odense Boldklub</h2>
-          <p>Træner: Zorniger · Kaptajn: Rasmus Falk</p>
+          <p>Afsluttet sæson · Træner: Zorniger · Kaptajn: Rasmus Falk</p>
         </div>
         <div class="ob-badge">
           <div class="ob-badge-l">Placering</div>
@@ -458,7 +464,7 @@ footer a{color:var(--ob-mid);text-decoration:none}
 <!-- ══════════════════════════════════════════════════
      SÆSON 2026/27
 ══════════════════════════════════════════════════ -->
-<div id="s-2627" class="season">
+<div id="s-2627" class="season on">
 
   <div class="sub-tabs">
     <button class="sub-tab active" onclick="subTab('2627','ob',this)">OB Forudsigelse</button>
@@ -469,11 +475,11 @@ footer a{color:var(--ob-mid);text-decoration:none}
   <!-- OB forudsigelse 2627 -->
   <div id="t2627-ob" class="sub-c on">
     <div class="pred-hero">
-      <div class="pred-label">Forudsigelse baseret på 2025/26 · Starter 24. juli 2026</div>
+      <div class="pred-label">Sæson 2026/27 · Starter 24. juli 2026 · Live data fra Wikipedia når sæsonen er i gang</div>
       <div style="display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap">
         <div>
           <div class="pred-pos" id="pred-pos">—</div>
-          <div class="pred-sub">Forventet placering i grundspil</div>
+          <div class="pred-sub" id="pred-sub-label">Forventet placering · opdateres automatisk</div>
         </div>
         <div style="margin-left:auto;text-align:right">
           <div style="font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.05em">Titelchance</div>
@@ -503,11 +509,9 @@ footer a{color:var(--ob-mid);text-decoration:none}
 
   <!-- Superliga 2627 -->
   <div id="t2627-liga" class="sub-c">
-    <div class="coming-soon">
-      <div class="cs-icon">⚽</div>
-      <h3>Sæsonen er ikke startet endnu</h3>
-      <p>3F Superliga 2026/27 starter fredag den 24. juli 2026. Stillingen vises her automatisk når Wikipedia opdateres efter den første spillerunde.</p>
-      <span class="cs-date">📅 Sæsonstart: 24. juli 2026</span>
+    <div class="card">
+      <div class="card-hdr"><span>📅 OB's kampprogram 2026/27</span><small>Sæsonstart 24. juli 2026</small></div>
+      <ul class="kamp-list" id="kampprogram-2627"></ul>
     </div>
     <div class="card">
       <div class="card-hdr"><span>Forventet ligastilling 2026/27</span><small>10.000 Monte Carlo-simuleringer</small></div>
@@ -552,6 +556,39 @@ footer a{color:var(--ob-mid);text-decoration:none}
 
 <script>
 
+
+
+const HOLD_2627 = {
+  VFF:'Viborg FF', OB:'OB', AGF:'AGF', BIF:'Brøndby IF',
+  SJF:'Sønderjyske', FCM:'FC Midtjylland', RFC:'Randers FC',
+  SIF:'Silkeborg IF', ACH:'AC Horsens', FCN:'FC Nordsjælland',
+  FCK:'F.C. København', LBK:'Lyngby BK',
+};
+
+const OB_KAMPE_2627 = [
+  {r:1,  dato:'24.07',kamp:'VFF - OB',  tid:'19:00',kanal:'TV3 Sport',    hjemme:false},
+  {r:2,  dato:'03.08',kamp:'OB - SJF',  tid:'19:00',kanal:'TV 2 Sport X', hjemme:true},
+  {r:3,  dato:'10.08',kamp:'SIF - OB',  tid:'19:00',kanal:'TV 2 Sport X', hjemme:false},
+  {r:4,  dato:'16.08',kamp:'OB - ACH',  tid:'14:00',kanal:'TV3 Sport',    hjemme:true},
+  {r:5,  dato:'~22.08',kamp:'AGF - OB', tid:'?',    kanal:'Ikke fastlagt',hjemme:false},
+  {r:6,  dato:'30.08',kamp:'LBK - OB',  tid:'14:00',kanal:'TV 2 Sport X', hjemme:false},
+  {r:7,  dato:'06.09',kamp:'OB - FCK',  tid:'16:00',kanal:'TV 2 Sport X', hjemme:true},
+  {r:8,  dato:'',     kamp:'RFC - OB',  tid:'',     kanal:'',             hjemme:false},
+  {r:9,  dato:'',     kamp:'OB - FCM',  tid:'',     kanal:'',             hjemme:true},
+  {r:10, dato:'',     kamp:'FCN - OB',  tid:'',     kanal:'',             hjemme:false},
+  {r:11, dato:'',     kamp:'OB - BIF',  tid:'',     kanal:'',             hjemme:true},
+  {r:12, dato:'',     kamp:'FCK - OB',  tid:'',     kanal:'',             hjemme:false},
+  {r:13, dato:'',     kamp:'OB - SIF',  tid:'',     kanal:'',             hjemme:true},
+  {r:14, dato:'',     kamp:'OB - VFF',  tid:'',     kanal:'',             hjemme:true},
+  {r:15, dato:'',     kamp:'SJF - OB',  tid:'',     kanal:'',             hjemme:false},
+  {r:16, dato:'',     kamp:'OB - FCN',  tid:'',     kanal:'',             hjemme:true},
+  {r:17, dato:'',     kamp:'BIF - OB',  tid:'',     kanal:'',             hjemme:false},
+  {r:18, dato:'',     kamp:'OB - LBK',  tid:'',     kanal:'',             hjemme:true},
+  {r:19, dato:'',     kamp:'FCM - OB',  tid:'',     kanal:'',             hjemme:false},
+  {r:20, dato:'',     kamp:'OB - AGF',  tid:'',     kanal:'',             hjemme:true},
+  {r:21, dato:'',     kamp:'ACH - OB',  tid:'',     kanal:'',             hjemme:false},
+  {r:22, dato:'',     kamp:'OB - RFC',  tid:'',     kanal:'',             hjemme:true},
+];
 
 const OB_ADVANCED_2526 = {
   rating:      {val:'6,91', rank:6,  label:'FotMob-rating',        kontekst:'6. bedst i ligaen'},
@@ -698,208 +735,259 @@ function parseWikiHTML(html){
   return null;
 }
 
+// ── SuperStats parsers ───────────────────────────────────────────────────
+function parseSuperstatsStilling(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const teams=[],seen=new Set();
+  for(const table of doc.querySelectorAll('table')){
+    const rows=Array.from(table.querySelectorAll('tr'));
+    for(const row of rows){
+      const cells=Array.from(row.querySelectorAll('td'));
+      if(cells.length<4)continue;
+      const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
+      if(!v[0].match(/^\d+\.?$/))continue;
+      const name=v[1].replace(/\s*\([A-Z]\)\s*/g,'').trim();
+      if(!name||name.length<2||seen.has(name))continue;
+      const goalMatch=(v[3]||'').match(/(\d+)-(\d+)/);
+      const gf=goalMatch?parseInt(goalMatch[1]):0;
+      const ga=goalMatch?parseInt(goalMatch[2]):0;
+      const pld=parseInt(v[2])||0;
+      const pts=parseInt(v[4])||0;
+      const{att,def}=calcStr(gf,ga,Math.max(pld,1));
+      seen.add(name);
+      teams.push({name,pld,gf,ga,pts,w:0,d:0,l:0,att,def,pos:50,
+                  color:teamColor(name,teams.length),form:[]});
+    }
+    if(teams.length>=6)return teams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
+  }
+  return null;
+}
+
+function parseSuperstatsOB(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const form=[],kampe=[];
+  for(const table of doc.querySelectorAll('table')){
+    for(const row of table.querySelectorAll('tr')){
+      const cells=Array.from(row.querySelectorAll('td'));
+      if(cells.length<2)continue;
+      const txt=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
+      const kampTxt=txt.find(t=>t.includes(' - OB')||t.includes('OB - '))||'';
+      const goalMatch=txt.find(t=>/^\d+-\d+$/.test(t));
+      if(kampTxt&&goalMatch){
+        const isHjemme=kampTxt.startsWith('OB');
+        const goals=goalMatch.split('-').map(Number);
+        const obG=isHjemme?goals[0]:goals[1];
+        const oppG=isHjemme?goals[1]:goals[0];
+        const kode=obG>oppG?'W':obG===oppG?'D':'L';
+        form.push(kode);
+        kampe.push({kamp:kampTxt,res:goalMatch,kode,hjemme:isHjemme});
+      }
+    }
+  }
+  return{form,kampe};
+}
+
+function parseWikiHTMLFallback(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const all=[],seen=new Set();
+  for(const table of doc.querySelectorAll('table')){
+    for(const row of table.querySelectorAll('tr')){
+      const cells=Array.from(row.querySelectorAll('td, th'));
+      if(cells.length<8)continue;
+      const v=cells.map(c=>c.textContent.replace(/\u2212/g,'-').replace(/\[.*?\]/g,'').replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim());
+      const pos=parseInt(v[0]);if(isNaN(pos)||pos<1||pos>16)continue;
+      const name=v[1];if(!name||name.length<2||seen.has(name))continue;
+      const pld=parseInt(v[2]);if(isNaN(pld)||pld<1)continue;
+      let gf=parseInt(v[6]),ga=parseInt(v[7]);
+      if(isNaN(gf)||isNaN(ga)){gf=parseInt(v[4]);ga=parseInt(v[5]);}
+      if(isNaN(gf)||isNaN(ga))continue;
+      let pts=NaN;
+      for(let i=cells.length-1;i>=6;i--){const n=parseInt(v[i]);if(!isNaN(n)&&n>=0&&n<=200){pts=n;break;}}
+      if(isNaN(pts))continue;
+      const{att,def}=calcStr(gf,ga,pld);
+      seen.add(name);
+      all.push({name,pld,gf,ga,pts,w:0,d:0,l:0,att,def,pos:50,color:teamColor(name,all.length),form:[]});
+    }
+  }
+  if(all.length>=6)return all.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
+  return null;
+}
+
+// ── PlayerStats parser ───────────────────────────────────────────────────
+function parsePlayerStatsStilling(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const teams=[],seen=new Set();
+  // Table rows: position, name, mp, pts, form
+  for(const table of doc.querySelectorAll('table')){
+    for(const row of table.querySelectorAll('tr')){
+      const cells=Array.from(row.querySelectorAll('td'));
+      if(cells.length<4)continue;
+      const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
+      // First cell should be a number (position)
+      const pos=parseInt(v[0]);
+      if(isNaN(pos)||pos<1||pos>16)continue;
+      const name=v[1].trim();
+      if(!name||name.length<2||seen.has(name))continue;
+      const pld=parseInt(v[2])||0;
+      const pts=parseInt(v[3])||0;
+      const{att,def}=calcStr(0,0,Math.max(pld,1));
+      seen.add(name);
+      teams.push({name,pld,gf:0,ga:0,pts,w:0,d:0,l:0,att,def,pos:50,
+                  color:teamColor(name,teams.length),form:[]});
+    }
+    if(teams.length>=6)return teams.sort((a,b)=>b.pts-a.pts);
+  }
+  // Try parsing from the text content directly (list format)
+  const text=doc.body?.textContent||'';
+  const teamRegex=/(\d+)\s+([A-Za-zÆØÅæøå\s]+?)\s+(\d+)\s+(\d+)/g;
+  let m;
+  const textTeams=[],textSeen=new Set();
+  while((m=teamRegex.exec(text))!==null){
+    const pos=parseInt(m[1]);
+    if(isNaN(pos)||pos<1||pos>16)continue;
+    const name=m[2].trim();
+    if(!name||name.length<2||textSeen.has(name))continue;
+    const pld=parseInt(m[3])||0,pts=parseInt(m[4])||0;
+    if(pts>pld*3+1)continue; // sanity check
+    textSeen.add(name);
+    textTeams.push({name,pld,gf:0,ga:0,pts,w:0,d:0,l:0,
+                    att:60,def:60,pos:50,color:teamColor(name,textTeams.length),form:[]});
+  }
+  if(textTeams.length>=6)return textTeams.sort((a,b)=>b.pts-a.pts);
+  return null;
+}
+
+function parsePlayerStatsOB(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  // Look for stats in the page
+  const text=doc.body?.textContent||'';
+  const stats={};
+  // xG
+  const xgM=text.match(/xG[:\s]+(\d+\.\d+)/i);
+  if(xgM)stats.xG=parseFloat(xgM[1]);
+  // Goals
+  const goalsM=text.match(/Goals?[:\s]+(\d+)/i);
+  if(goalsM)stats.goals=parseInt(goalsM[1]);
+  return stats;
+}
+
+// ── SuperStats via Cloudflare Worker ─────────────────────────────────────
+const WORKER_URL = 'https://ob-superliga.bosylvesterpedersen.workers.dev';
+
+function parseWorkerStilling(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const teams=[],seen=new Set();
+  for(const table of doc.querySelectorAll('table')){
+    const rows=Array.from(table.querySelectorAll('tr'));
+    for(const row of rows){
+      const cells=Array.from(row.querySelectorAll('td'));
+      if(cells.length<4)continue;
+      const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
+      if(!v[0].match(/^\d+\.?$/))continue;
+      const name=v[1].replace(/\s*\([A-Z]\)\s*/g,'').replace(/Logo\s*/gi,'').trim();
+      if(!name||name.length<2||seen.has(name))continue;
+      const goalMatch=(v[3]||'').match(/(\d+)-(\d+)/);
+      const gf=goalMatch?parseInt(goalMatch[1]):0;
+      const ga=goalMatch?parseInt(goalMatch[2]):0;
+      const pld=parseInt(v[2])||0;
+      const pts=parseInt(v[4])||0;
+      const{att,def}=calcStr(gf,ga,Math.max(pld,1));
+      seen.add(name);
+      teams.push({name,pld,gf,ga,pts,w:0,d:0,l:0,att,def,pos:50,
+                  color:teamColor(name,teams.length),form:[]});
+    }
+    if(teams.length>=6)return teams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
+  }
+  return null;
+}
+
+function parseWorkerOB(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const form=[];
+  // Parse form from img alt texts
+  for(const img of doc.querySelectorAll('img')){
+    const alt=(img.alt||img.title||'').toLowerCase();
+    const src=(img.src||'').toLowerCase();
+    if(alt.includes('vundet')||src.includes('prik_w'))form.push('W');
+    else if(alt.includes('uafgjort')||src.includes('prik_d'))form.push('D');
+    else if(alt.includes('tabt')||src.includes('prik_l'))form.push('L');
+  }
+  return{form:form.slice(-6)};
+}
+
 async function loadData(){
   ['rb1','rb2'].forEach(id=>{
     const b=document.getElementById(id);
     if(b){b.disabled=true;b.innerHTML='<span class="spin-d"></span> Henter…';}
   });
-  setStatus('load','Henter…');
+  setStatus('load','Henter live data…');
+  let teams=null,source='',obExtra=null;
+
+  // Kilde 1: SuperStats via Cloudflare Worker
   try{
-    const res=await fetch('https://en.wikipedia.org/w/api.php?action=parse&page=2025%E2%80%9326_Danish_Superliga&format=json&prop=text&origin=*');
-    if(!res.ok)throw new Error('Wikipedia '+res.status);
-    const data=await res.json();
-    const teams=parseWikiHTML(data?.parse?.text?.['*']||'');
-    if(!teams||teams.length<6)throw new Error('Tabel ikke fundet');
-    const obIdx=teams.findIndex(t=>isOB(t.name));
-    if(obIdx<0)throw new Error('OB ikke fundet');
-    TEAMS=teams;OB_IDX=obIdx;
-    const now=new Date().toLocaleString('da-DK',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    setStatus('live','Live · Wikipedia · '+now);
-    document.getElementById('liga-ts').textContent=now;
-    renderOBStats(teams,obIdx);
-    renderKampListe();
-    renderLiga(teams,obIdx);
-    setTimeout(()=>runSim(teams,obIdx),50);
+    const year=new Date().getFullYear();
+    const aar=encodeURIComponent(`${year}/${year+1}`);
+    const [stilRes,obRes]=await Promise.all([
+      fetch(`${WORKER_URL}/`),
+      fetch(`${WORKER_URL}/ob`)
+    ]);
+    if(!stilRes.ok)throw new Error('Worker stilling '+stilRes.status);
+    const [stilHtml,obHtml]=await Promise.all([stilRes.text(),obRes.text()]);
+    teams=parseWorkerStilling(stilHtml);
+    if(!teams||teams.length<6)throw new Error('Stilling ikke fundet — '+teams?.length+' hold');
+    obExtra=parseWorkerOB(obHtml);
+    source='SuperStats.dk';
+    console.log('SuperStats via Worker OK:',teams.length,'hold');
   }catch(e){
-    setStatus('err','Wikipedia utilgængelig');
-    console.warn(e);
+    console.warn('Worker fejl:',e.message);
+    // Kilde 2: Wikipedia fallback
+    setStatus('load','Prøver Wikipedia…');
+    try{
+      const res=await fetch('https://en.wikipedia.org/w/api.php?action=parse&page=2026%E2%80%9327_Danish_Superliga&format=json&prop=text&origin=*');
+      const data=await res.json();
+      const doc=new DOMParser().parseFromString(data?.parse?.text?.['*']||'','text/html');
+      const all=[],seen=new Set();
+      for(const table of doc.querySelectorAll('table')){
+        for(const row of table.querySelectorAll('tr')){
+          const cells=Array.from(row.querySelectorAll('td, th'));
+          if(cells.length<8)continue;
+          const v=cells.map(c=>c.textContent.replace(/\u2212/g,'-').replace(/\[.*?\]/g,'').replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim());
+          const pos=parseInt(v[0]);if(isNaN(pos)||pos<1||pos>16)continue;
+          const name=v[1];if(!name||name.length<2||seen.has(name))continue;
+          const pld=parseInt(v[2]);if(isNaN(pld)||pld<1)continue;
+          let gf=parseInt(v[6]),ga=parseInt(v[7]);
+          if(isNaN(gf)||isNaN(ga)){gf=parseInt(v[4]);ga=parseInt(v[5]);}
+          if(isNaN(gf)||isNaN(ga))continue;
+          let pts=NaN;
+          for(let i=cells.length-1;i>=6;i--){const n=parseInt(v[i]);if(!isNaN(n)&&n>=0&&n<=200){pts=n;break;}}
+          if(isNaN(pts))continue;
+          const{att,def}=calcStr(gf,ga,pld);
+          seen.add(name);
+          all.push({name,pld,gf,ga,pts,w:0,d:0,l:0,att,def,pos:50,color:teamColor(name,all.length),form:[]});
+        }
+      }
+      if(all.length>=6){teams=all.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));source='Wikipedia';}
+    }catch(e2){console.warn('Wikipedia fejl:',e2.message);}
   }
-  ['rb1','rb2'].forEach(id=>{
-    const b=document.getElementById(id);
-    if(b){b.disabled=false;b.innerHTML='↻ Opdater med nyeste data';}
-  });
-}
 
-
-function renderAdvancedStats(){
-  const el=document.getElementById('adv-stats-grid');
-  if(!el)return;
-  const stats=OB_ADVANCED_2526;
-  const items=Object.values(stats);
-  el.innerHTML=items.map(s=>{
-    const isGood=s.rank<=4;
-    const isBad=s.rank>=9;
-    const color=isGood?'#EAF3DE':isBad?'#FEE2E2':'var(--surf2)';
-    const textColor=isGood?'#3B6D11':isBad?'#991b1b':'var(--tx2)';
-    const rankBg=isGood?'#3B6D11':isBad?'#991b1b':'var(--ob)';
-    return`<div style="background:${color};border-radius:var(--rs);padding:.8rem 1rem;position:relative">
-      <div style="position:absolute;top:.6rem;right:.7rem;background:${rankBg};color:#fff;
-        border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">#${s.rank}</div>
-      <div style="font-size:10px;color:${textColor};text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">${s.label}</div>
-      <div style="font-size:22px;font-weight:800;color:var(--ob);margin-bottom:2px">${s.val}</div>
-      <div style="font-size:11px;color:${textColor};opacity:.8">${s.kontekst}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderKampListe(){
-  const el=document.getElementById('kamp-list');
-  if(!el)return;
-  // Show last 10 matches, most recent first
-  const kampe=OB_KAMPE_2526.filter(k=>k.kode!==null).reverse().slice(0,32);
-  el.innerHTML=kampe.map(k=>{
-    const cls=k.kode==='W'?'res-w':k.kode==='D'?'res-d':'res-l';
-    const label=k.kode==='W'?'V':k.kode==='D'?'U':'T';
-    return`<li class="kamp">
-      <span class="kamp-dato">${k.dato}</span>
-      <span class="kamp-hold">${k.kamp}<em>${k.ude?'Ude':'Hjemme'}</em></span>
-      <span class="kamp-res ${cls}">${k.res}</span>
-      <span class="kamp-tur">Runde ${k.r}</span>
-    </li>`;
-  }).join('');
-}
-
-function renderOBStats(teams,obIdx){
-  const ob=teams[obIdx],rank=obIdx+1;
-  document.getElementById('ob-rank').textContent=rank+'.';
-  // Combined stats (Liga + Pokalen)
-  const POKAL={k:4,v:3,u:0,t:1,gf:7,ga:2}; // R3 0-3, R4 0-3, QF1 1-0, QF2 lost (AGF 2-0)
-  document.getElementById('ob-pld').textContent=ob.pld+POKAL.k;
-  document.getElementById('ob-gf').textContent=ob.gf+POKAL.gf;
-  document.getElementById('ob-ga').textContent=ob.ga+POKAL.ga;
-  document.getElementById('ob-pts').textContent=ob.pts;
-  document.getElementById('ob-wdl').textContent=`${ob.w}·${ob.d}·${ob.l}`;
-  document.getElementById('ob-liga-line').textContent=`${ob.pld}K · ${ob.w}S ${ob.d}U ${ob.l}T · ${ob.gf}-${ob.ga} mål · ${ob.pts}pt`;
-  const gd=ob.gf-ob.ga,gpg=(ob.gf/Math.max(ob.pld,1)).toFixed(2),cgpg=(ob.ga/Math.max(ob.pld,1)).toFixed(2);
-  document.getElementById('ob-verdict').textContent=
-    rank<=6?`💙 Stærk comeback-sæson! OB sluttede på ${rank}. plads med ${ob.pts} point og nåede mesterskabsspillet.`
-    :rank<=9?`OB sluttede på ${rank}. plads med ${ob.pts} point — nedrykningsspil i comeback-sæsonen, men holdet overlevede.`
-    :`Hård sæson — ${rank}. plads med ${ob.pts} point. Zorniger har sin opgave klar til 2026/27.`;
-  document.getElementById('ins-att').textContent=`${ob.gf} mål på ${ob.pld} kampe — ${gpg} per kamp. ${ob.gf>45?'Flot angrebsspil!':ob.gf>30?'Godkendt offensivt.':'Scoringen var en udfordring.'}`;
-  document.getElementById('ins-def').textContent=`${ob.ga} mål indkasset — ${cgpg} per kamp. ${ob.ga<35?'Solid defensiv sæson.':ob.ga<50?'Forsvaret kan forbedres til næste sæson.':'Defensive udfordringer kostede point.'}`;
-  document.getElementById('ins-bal').textContent=`${ob.w} sejre, ${ob.d} uafgjorte, ${ob.l} nederlag. Måldifference: ${gd>=0?'+':''}${gd}. ${ob.w>ob.l?'Positiv balance!':'Zorniger har arbejde foran sig.'}`;
-
-  if(chartLiga)chartLiga.destroy();
-  const sorted=[...teams].sort((a,b)=>b.pts-a.pts);
-  chartLiga=new Chart(document.getElementById('chart-liga'),{
-    type:'bar',
-    data:{labels:sorted.map(t=>t.name),datasets:[
-      {data:sorted.map(t=>t.gf),backgroundColor:sorted.map(t=>isOB(t.name)?'#003B75':'#B4B2A9'),borderWidth:0},
-      {data:sorted.map(t=>t.ga),backgroundColor:sorted.map(t=>isOB(t.name)?'#85B7EB':'#D3D1C7'),borderWidth:0},
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{ticks:{autoSkip:false,maxRotation:45,font:{size:10}}},y:{title:{display:true,text:'Mål',font:{size:10}}}}}
-  });
-}
-
-function renderLiga(teams,obIdx){
-  document.getElementById('liga-tbody').innerHTML=teams.map((t,i)=>{
-    const isOB=i===obIdx,md=t.gf-t.ga;
-    const zone=i<6?`<span class="zt">Top 6</span>`:i>=9?`<span class="zr">Nedryk.</span>`:'';
-    return`<tr class="${isOB?'ob-r':''}">
-      <td><span class="pos-b">${i+1}</span></td>
-      <td>${t.name}${isOB?' ★':''}${zone}</td>
-      <td>${t.pld}</td><td><strong>${t.pts}</strong></td>
-      <td>${t.gf}</td><td>${t.ga}</td>
-      <td>${(md>=0?'+':'')+md}</td>
-      <td>${formCell(t.form)}</td>
-    </tr>`;
-  }).join('');
-}
-
-function poisson(lam){let L=Math.exp(-lam),p=1,k=0;do{k++;p*=Math.random();}while(p>L);return k-1;}
-function simMatch(ai,di,pi,aj,dj,pj){
-  const n=()=>(Math.random()+Math.random()+Math.random()-1.5)/1.5;
-  const lA=Math.max(0.15,((ai/100)*(1-dj/150)+(pi-pj)/200)*1.08*(1+n()*0.18)*2.2);
-  const lB=Math.max(0.15,((aj/100)*(1-di/150)-(pi-pj)/200)*(1+n()*0.18)*2.2);
-  return[poisson(lA),poisson(lB)];
-}
-
-function runSim(teams,obIdx){
-  const T=teams.length,N=10000;
-  const tw=new Array(T).fill(0),ptA=new Array(T).fill(0);
-  const gfA=new Array(T).fill(0),gaA=new Array(T).fill(0);
-  const posA=new Array(T).fill(0),t6A=new Array(T).fill(0);
-  for(let s=0;s<N;s++){
-    const pts=new Array(T).fill(0),gf=new Array(T).fill(0),ga=new Array(T).fill(0);
-    for(let i=0;i<T;i++) for(let j=0;j<T;j++){
-      if(i===j)continue;
-      const[gi,gj]=simMatch(teams[i].att,teams[i].def,teams[i].pos,teams[j].att,teams[j].def,teams[j].pos);
-      gf[i]+=gi;ga[i]+=gj;gf[j]+=gj;ga[j]+=gi;
-      if(gi>gj)pts[i]+=3;else if(gi===gj){pts[i]++;pts[j]++;}else pts[j]+=3;
+  if(teams&&teams.length>=6){
+    const obIdx=teams.findIndex(t=>isOB(t.name));
+    if(obIdx>=0){
+      if(obExtra?.form?.length>0)teams[obIdx].form=obExtra.form;
+      TEAMS=teams;OB_IDX=obIdx;
+      const now=new Date().toLocaleString('da-DK',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      setStatus('live','Live · '+source+' · '+now);
+      document.getElementById('liga-ts').textContent=now;
+      renderOBStats(teams,obIdx);
+      renderLiga(teams,obIdx);
+      setTimeout(()=>runSim(teams,obIdx),50);
+      ['rb1','rb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.disabled=false;b.innerHTML='↻ Opdater med nyeste data';}});
+      return;
     }
-    const sorted=[...Array(T).keys()].sort((a,b)=>pts[b]!==pts[a]?pts[b]-pts[a]:(gf[b]-ga[b])-(gf[a]-ga[a]));
-    sorted.forEach((idx,r)=>posA[idx]+=r+1);
-    const top6=sorted.slice(0,6);top6.forEach(idx=>t6A[idx]++);
-    const cP={},cGf={},cGa={};
-    top6.forEach(idx=>{cP[idx]=pts[idx];cGf[idx]=gf[idx];cGa[idx]=ga[idx];});
-    for(let ii=0;ii<6;ii++) for(let jj=0;jj<6;jj++){
-      if(ii===jj)continue;
-      const i=top6[ii],j=top6[jj];
-      const[gi,gj]=simMatch(teams[i].att,teams[i].def,teams[i].pos,teams[j].att,teams[j].def,teams[j].pos);
-      cGf[i]=(cGf[i]||0)+gi;cGa[i]=(cGa[i]||0)+gj;cGf[j]=(cGf[j]||0)+gj;cGa[j]=(cGa[j]||0)+gi;
-      if(gi>gj)cP[i]=(cP[i]||0)+3;else if(gi===gj){cP[i]=(cP[i]||0)+1;cP[j]=(cP[j]||0)+1;}else cP[j]=(cP[j]||0)+3;
-    }
-    const champ=[...top6].sort((a,b)=>cP[b]!==cP[a]?cP[b]-cP[a]:(cGf[b]-cGa[b])-(cGf[a]-cGa[a]))[0];
-    tw[champ]++;pts.forEach((v,i)=>{ptA[i]+=v;gfA[i]+=gf[i];gaA[i]+=ga[i];});
   }
-  const tp=tw.map(w=>w/N*100),avgPt=ptA.map(v=>Math.round(v/N));
-  const avgGf=gfA.map(v=>Math.round(v/N)),avgGa=gaA.map(v=>Math.round(v/N));
-  const avgPos=posA.map(v=>(v/N).toFixed(1)),t6p=t6A.map(v=>(v/N*100).toFixed(1));
-  const ob=obIdx,pr=parseFloat(avgPos[ob]);
-  document.getElementById('pred-pos').textContent=pr.toFixed(1)+'.';
-  document.getElementById('pred-title').textContent=tp[ob].toFixed(1)+'%';
-  document.getElementById('pred-pts').textContent=avgPt[ob];
-  document.getElementById('pred-gf').textContent=avgGf[ob];
-  document.getElementById('pred-ga').textContent=avgGa[ob];
-  document.getElementById('pred-top6').textContent=t6p[ob]+'%';
-  document.getElementById('pred-key').textContent=teams[ob].def<50
-    ?`Forsvaret (${teams[ob].def}/100) er det vigtigste fokusområde. En god defensiv sommertransfer kan flytte OB markant op.`
-    :`Konsistens og det mentale bliver nøglen — OB har potentiale til en stærk 2026/27-sæson.`;
-  document.getElementById('pred-str').textContent=`Angrebsstyrke ${teams[ob].att}/100 baseret på ${teams[ob].gf} mål i 2025/26. ${teams[ob].att>65?'Kompetitivt angreb.':'Scoringen skal forbedres.'}`;
-  document.getElementById('pred-risk').textContent=pr>7
-    ?`Risiko for nedrykningsspil igen. Sommervinduet og Zorinigers taktiske arbejde bliver afgørende.`
-    :`OB forventes at holde sig i øvre halvdel — en stabil sæson er realistisk.`;
-
-  const byTitle=[...Array(T).keys()].sort((a,b)=>tp[b]-tp[a]),maxTP=Math.max(...tp);
-  document.getElementById('prob-bars').innerHTML=byTitle.map(idx=>{
-    const isOB=idx===ob;
-    return`<div class="prob-row">
-      <span class="pn" style="font-weight:${isOB?700:400};color:${isOB?'var(--ob)':'var(--tx)'}">${teams[idx].name}${isOB?' ★':''}</span>
-      <div class="pbg"><div class="pf" style="width:${maxTP>0?(tp[idx]/maxTP*100).toFixed(1):0}%;background:${isOB?'var(--ob)':teams[idx].color}"></div></div>
-      <span class="pp" style="color:${isOB?'var(--ob)':'var(--tx2)'}">${tp[idx].toFixed(1)}%</span>
-    </div>`;
-  }).join('');
-
-  const byPts=[...Array(T).keys()].sort((a,b)=>avgPt[b]-avgPt[a]);
-  let divDone=false;
-  document.getElementById('pred-tbody').innerHTML=byPts.map((idx,rank)=>{
-    let div='';
-    if(rank===6&&!divDone){divDone=true;div=`<tr class="div-r"><td colspan="7">── Nedrykningsspil ──</td></tr>`;}
-    const isOB=idx===ob,md=avgGf[idx]-avgGa[idx],barW=maxTP>0?(tp[idx]/maxTP*100).toFixed(1):0;
-    const zone=rank<6?`<span class="zt">Top 6</span>`:rank>=9?`<span class="zr">Nedryk.</span>`:'';
-    return div+`<tr class="${isOB?'ob-r':''}">
-      <td><span class="pos-b">${rank+1}</span></td>
-      <td style="font-weight:${isOB?700:400}">${teams[idx].name}${isOB?' ★':''}${zone}</td>
-      <td><strong>${avgPt[idx]}</strong></td><td>${avgGf[idx]}</td><td>${avgGa[idx]}</td>
-      <td>${(md>=0?'+':'')+md}</td>
-      <td><div class="bar-c"><span style="min-width:32px;font-size:11px;font-weight:600;color:${isOB?'var(--ob)':'var(--tx2)'}">${tp[idx].toFixed(1)}%</span><div class="mini-bar"><div class="mini-fill" style="width:${barW}%"></div></div></div></td>
-    </tr>`;
-  }).join('');
+  setStatus('err','Data utilgængelig · prøv igen');
+  ['rb1','rb2'].forEach(id=>{const b=document.getElementById(id);if(b){b.disabled=false;b.innerHTML='↻ Prøv igen';}});
 }
-
-renderKampListe();
-renderAdvancedStats();
 loadData();
 </script>
 </body>
