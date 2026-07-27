@@ -475,7 +475,7 @@ footer a{color:var(--ob-mid);text-decoration:none}
   <!-- OB forudsigelse 2627 -->
   <div id="t2627-ob" class="sub-c on">
     <div class="pred-hero">
-      <div class="pred-label">Sæson 2026/27 · Starter 24. juli 2026 · Live data fra Wikipedia når sæsonen er i gang</div>
+      <div class="pred-label">Sæson 2026/27 · Live data fra SuperStats.dk · Opdateres efter hver kamp</div>
       <div style="display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap">
         <div>
           <div class="pred-pos" id="pred-pos">—</div>
@@ -563,7 +563,7 @@ footer a{color:var(--ob-mid);text-decoration:none}
 </div><!-- end 2627 -->
 
 <footer>
-  <p>Data: <a href="https://en.wikipedia.org/wiki/2025%E2%80%9326_Danish_Superliga" target="_blank">Wikipedia</a> · Opdateres automatisk efter hver kamp</p>
+  <p>Data: <a href="https://superstats.dk" target="_blank">SuperStats.dk</a> via Cloudflare · Opdateres automatisk efter hver kamp</p>
   <p>Forudsigelse: Monte Carlo · 10.000 simuleringer · Baseret på 2025/26-resultater</p>
   <p style="margin-top:.3rem;color:#b8cfe0">OB er de bedste 💙 · Tillykke med fødselsdagen!</p>
 </footer>
@@ -1155,7 +1155,7 @@ async function loadData(){
           all.push({name,pld,gf,ga,pts,w:0,d:0,l:0,att,def,pos:50,color:teamColor(name,all.length),form:[]});
         }
       }
-      if(all.length>=6){teams=all.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));source='Wikipedia';}
+      if(all.length>=6){teams=all.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));source='SuperStats (fallback)';}
     }catch(e2){console.warn('Wikipedia fejl:',e2.message);}
   }
 
