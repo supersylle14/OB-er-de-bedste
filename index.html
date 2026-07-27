@@ -1056,43 +1056,41 @@ function renderKampprogram2627(){
 function parseOBProgram(html){
   const doc=new DOMParser().parseFromString(html,'text/html');
   const kampe=[];
-  let runde=0;
 
   for(const table of doc.querySelectorAll('table')){
-    // Check if this is a round table (has "Runde X" header before it)
-    const prev=table.previousElementSibling;
-    const prevText=prev?.textContent||'';
-    const rundeMatch=prevText.match(/Runde\s*(\d+)/);
-    if(rundeMatch) runde=parseInt(rundeMatch[1]);
-    if(!runde)continue;
+    // Runde nummer er i thead: <th colspan="2">Runde 1</th>
+    const thead=table.querySelector('thead');
+    if(!thead)continue;
+    const rundeMatch=thead.textContent.match(/Runde\s*(\d+)/);
+    if(!rundeMatch)continue;
+    const runde=parseInt(rundeMatch[1]);
 
-    for(const row of table.querySelectorAll('tr')){
+    for(const row of table.querySelectorAll('tbody tr')){
       const cells=Array.from(row.querySelectorAll('td'));
       if(cells.length<3)continue;
       const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
 
-      // v[0]=dag (Fre/Lør etc), v[1]=dato+tid, v[2]=kamp (e.g. "VFF- OB")
+      // v[0]=dag, v[1]=dato+tid, v[2]=kamp
       const kampRaw=v[2]||'';
       const isOB=kampRaw.includes('OB');
       if(!isOB)continue;
 
-      // Parse dato "24/07 19:00" or "24/07 -"
+      // Dato: "24/07 19:00" eller "24/07 -"
       const datoMatch=(v[1]||'').match(/(\d+)\/(\d+)(?:\s+(\d+:\d+))?/);
       const dato=datoMatch?`${datoMatch[1]}.${datoMatch[2]}`:'';
       const tid=datoMatch&&datoMatch[3]?datoMatch[3]:'';
 
-      // Parse result - check if there's a score link
+      // Resultat: link med "1-0" tekst
       const resLink=cells[3]?.querySelector('a');
       const resTxt=resLink?.textContent.trim()||'';
-      const hasResult=resTxt.match(/^\d+-\d+$/);
-      const spillet=!!hasResult;
+      const hasResult=!!resTxt.match(/^\d+-\d+$/);
 
-      // Normalize kamp name — "VFF- OB" → "VFF - OB"
+      // Normalisér kamp
       const kampNorm=kampRaw.replace(/\s*-\s*/g,' - ').replace(/\s+/g,' ').trim();
       const isHjemme=kampNorm.startsWith('OB');
       const modstander=kampNorm.replace('OB - ','').replace(' - OB','').trim();
 
-      // Get TV kanal from img alt
+      // TV kanal
       const tvImg=cells[cells.length-1]?.querySelector('img');
       const kanal=tvImg?.alt||'';
 
@@ -1105,7 +1103,7 @@ function parseOBProgram(html){
       }
 
       kampe.push({r:runde,dato,tid,kanal,kamp:kampNorm,modstander,
-                  hjemme:isHjemme,spillet,res:hasResult?resTxt:'',kode});
+                  hjemme:isHjemme,spillet:hasResult,res:hasResult?resTxt:'',kode});
     }
   }
   return kampe.sort((a,b)=>a.r-b.r);
