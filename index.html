@@ -916,6 +916,87 @@ function renderLiga(teams,obIdx){
   }).join('');
 }
 
+
+function poisson(lam){let L=Math.exp(-lam),p=1,k=0;do{k++;p*=Math.random();}while(p>L);return k-1;}
+
+function simMatch(ai,di,pi,aj,dj,pj){
+  const n=()=>(Math.random()+Math.random()+Math.random()-1.5)/1.5;
+  const lA=Math.max(0.15,((ai/100)*(1-dj/150)+(pi-pj)/200)*1.08*(1+n()*0.18)*2.2);
+  const lB=Math.max(0.15,((aj/100)*(1-di/150)-(pi-pj)/200)*(1+n()*0.18)*2.2);
+  return[poisson(lA),poisson(lB)];
+}
+
+function runSim(teams,obIdx){
+  const T=teams.length,N=10000;
+  const tw=new Array(T).fill(0),ptA=new Array(T).fill(0);
+  const gfA=new Array(T).fill(0),gaA=new Array(T).fill(0);
+  const posA=new Array(T).fill(0),t6A=new Array(T).fill(0);
+  for(let s=0;s<N;s++){
+    const pts=new Array(T).fill(0),gf=new Array(T).fill(0),ga=new Array(T).fill(0);
+    for(let i=0;i<T;i++) for(let j=0;j<T;j++){
+      if(i===j)continue;
+      const[gi,gj]=simMatch(teams[i].att,teams[i].def,teams[i].pos,teams[j].att,teams[j].def,teams[j].pos);
+      gf[i]+=gi;ga[i]+=gj;gf[j]+=gj;ga[j]+=gi;
+      if(gi>gj)pts[i]+=3;else if(gi===gj){pts[i]++;pts[j]++;}else pts[j]+=3;
+    }
+    const sorted=[...Array(T).keys()].sort((a,b)=>pts[b]!==pts[a]?pts[b]-pts[a]:(gf[b]-ga[b])-(gf[a]-ga[a]));
+    sorted.forEach((idx,r)=>posA[idx]+=r+1);
+    const top6=sorted.slice(0,6);top6.forEach(idx=>t6A[idx]++);
+    const cP={},cGf={},cGa={};
+    top6.forEach(idx=>{cP[idx]=pts[idx];cGf[idx]=gf[idx];cGa[idx]=ga[idx];});
+    for(let ii=0;ii<6;ii++) for(let jj=0;jj<6;jj++){
+      if(ii===jj)continue;
+      const i=top6[ii],j=top6[jj];
+      const[gi,gj]=simMatch(teams[i].att,teams[i].def,teams[i].pos,teams[j].att,teams[j].def,teams[j].pos);
+      cGf[i]=(cGf[i]||0)+gi;cGa[i]=(cGa[i]||0)+gj;cGf[j]=(cGf[j]||0)+gj;cGa[j]=(cGa[j]||0)+gi;
+      if(gi>gj)cP[i]=(cP[i]||0)+3;else if(gi===gj){cP[i]=(cP[i]||0)+1;cP[j]=(cP[j]||0)+1;}else cP[j]=(cP[j]||0)+3;
+    }
+    const champ=[...top6].sort((a,b)=>cP[b]!==cP[a]?cP[b]-cP[a]:(cGf[b]-cGa[b])-(cGf[a]-cGa[a]))[0];
+    tw[champ]++;pts.forEach((v,i)=>{ptA[i]+=v;gfA[i]+=gf[i];gaA[i]+=ga[i];});
+  }
+  const tp=tw.map(w=>w/N*100),avgPt=ptA.map(v=>Math.round(v/N));
+  const avgGf=gfA.map(v=>Math.round(v/N)),avgGa=gaA.map(v=>Math.round(v/N));
+  const avgPos=posA.map(v=>(v/N).toFixed(1)),t6p=t6A.map(v=>(v/N*100).toFixed(1));
+  const ob=obIdx,pr=parseFloat(avgPos[ob]);
+  document.getElementById('pred-pos').textContent=pr.toFixed(1)+'.';
+  document.getElementById('pred-title').textContent=tp[ob].toFixed(1)+'%';
+  document.getElementById('pred-pts').textContent=avgPt[ob];
+  document.getElementById('pred-gf').textContent=avgGf[ob];
+  document.getElementById('pred-ga').textContent=avgGa[ob];
+  document.getElementById('pred-top6').textContent=t6p[ob]+'%';
+  document.getElementById('pred-key').textContent=teams[ob].def<50
+    ?`Forsvaret (${teams[ob].def}/100) er det vigtigste fokusområde til 2026/27.`
+    :`Konsistens bliver nøglen — OB har potentiale til en stærk sæson.`;
+  document.getElementById('pred-str').textContent=`Angrebsstyrke ${teams[ob].att}/100 baseret på ${teams[ob].gf} mål.`;
+  document.getElementById('pred-risk').textContent=pr>7
+    ?`Risiko for nedrykningsspil. Sommervinduet bliver afgørende.`
+    :`OB forventes at holde sig i øvre halvdel.`;
+  const byTitle=[...Array(T).keys()].sort((a,b)=>tp[b]-tp[a]),maxTP=Math.max(...tp);
+  document.getElementById('prob-bars').innerHTML=byTitle.map(idx=>{
+    const isOB=idx===ob;
+    return`<div class="prob-row">
+      <span class="pn" style="font-weight:${isOB?700:400};color:${isOB?'var(--ob)':'var(--tx)'}">${teams[idx].name}${isOB?' ★':''}</span>
+      <div class="pbg"><div class="pf" style="width:${maxTP>0?(tp[idx]/maxTP*100).toFixed(1):0}%;background:${isOB?'var(--ob)':teams[idx].color}"></div></div>
+      <span class="pp" style="color:${isOB?'var(--ob)':'var(--tx2)'}">${tp[idx].toFixed(1)}%</span>
+    </div>`;
+  }).join('');
+  const byPts=[...Array(T).keys()].sort((a,b)=>avgPt[b]-avgPt[a]);
+  let divDone=false;
+  document.getElementById('pred-tbody').innerHTML=byPts.map((idx,rank)=>{
+    let div='';
+    if(rank===6&&!divDone){divDone=true;div=`<tr class="div-r"><td colspan="7">── Nedrykningsspil ──</td></tr>`;}
+    const isOB=idx===ob,md=avgGf[idx]-avgGa[idx],barW=maxTP>0?(tp[idx]/maxTP*100).toFixed(1):0;
+    const zone=rank<6?`<span class="zt">Top 6</span>`:rank>=9?`<span class="zr">Nedryk.</span>`:'';
+    return div+`<tr class="${isOB?'ob-r':''}">
+      <td><span class="pos-b">${rank+1}</span></td>
+      <td style="font-weight:${isOB?700:400}">${teams[idx].name}${isOB?' ★':''}${zone}</td>
+      <td><strong>${avgPt[idx]}</strong></td><td>${avgGf[idx]}</td><td>${avgGa[idx]}</td>
+      <td>${(md>=0?'+':'')+md}</td>
+      <td><div class="bar-c"><span style="min-width:32px;font-size:11px;font-weight:600;color:${isOB?'var(--ob)':'var(--tx2)'}">${tp[idx].toFixed(1)}%</span><div class="mini-bar"><div class="mini-fill" style="width:${barW}%"></div></div></div></td>
+    </tr>`;
+  }).join('');
+}
+
 // ── SuperStats via Cloudflare Worker ─────────────────────────────────────
 const WORKER_URL = 'https://ob-superliga.bosylvesterpedersen.workers.dev';
 
