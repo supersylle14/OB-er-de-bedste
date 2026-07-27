@@ -509,6 +509,21 @@ footer a{color:var(--ob-mid);text-decoration:none}
 
   <!-- Superliga 2627 -->
   <div id="t2627-liga" class="sub-c">
+    <button class="refresh-btn" id="rb2" onclick="loadData()">↻ Opdater med nyeste data</button>
+    <div class="card">
+      <div class="card-hdr"><span>Aktuel stilling 2026/27</span><small id="liga-ts">—</small></div>
+      <div style="overflow-x:auto">
+        <table class="liga-table" style="table-layout:fixed;width:100%">
+          <thead><tr>
+            <th style="width:30px">#</th><th>Hold</th>
+            <th style="width:30px">Sp</th><th style="width:30px">Pt</th>
+            <th style="width:30px">MF</th><th style="width:30px">MI</th>
+            <th style="width:38px">MD</th><th style="width:62px">Form</th>
+          </tr></thead>
+          <tbody id="liga-tbody"><tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--tx3)">Henter…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
     <div class="card">
       <div class="card-hdr"><span>📅 OB's kampprogram 2026/27</span><small>Sæsonstart 24. juli 2026</small></div>
       <ul class="kamp-list" id="kampprogram-2627"></ul>
