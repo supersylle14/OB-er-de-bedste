@@ -877,37 +877,72 @@ const WORKER_URL = 'https://ob-superliga.bosylvesterpedersen.workers.dev';
 function parseWorkerStilling(html){
   const doc=new DOMParser().parseFromString(html,'text/html');
   const teams=[],seen=new Set();
-  // Find the standings table — has headers: # Klub K V U T Mål +/- Point Seneste
-  for(const table of doc.querySelectorAll('table')){
-    const headers=Array.from(table.querySelectorAll('th')).map(th=>th.textContent.trim());
-    // Check if this looks like a standings table
-    const isStanding=headers.includes('Point')||headers.includes('Pt');
-    if(!isStanding)continue;
-    for(const row of table.querySelectorAll('tbody tr')){
+
+  // Use the sidebar table: #tabel1
+  // Structure: pos | logo | name | K | Mål | P
+  // e.g. "1." | img | "FC Midtjylland (P)" | "1" | "3-2" | "3"
+  const sidebar=doc.getElementById('tabel1');
+  if(sidebar){
+    for(const row of sidebar.querySelectorAll('tbody tr')){
       const cells=Array.from(row.querySelectorAll('td'));
-      if(cells.length<8)continue;
+      if(cells.length<6)continue;
       const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
-      // v[0] = "1." position
+      // v[0]=pos, v[1]=logo(empty), v[2]=name, v[3]=K, v[4]=Mål, v[5]=P
       const posMatch=v[0].match(/^(\d+)\.?$/);
       if(!posMatch)continue;
-      // v[1] = logo img (empty text), v[2] = club name
-      let name=(v[2]||v[1]||'')
-        .replace(/\s*\([A-Z]\)\s*/g,' ')
-        .replace(/\s+/g,' ').trim();
+      let name=v[2].replace(/\s*\([A-Z]\)\s*/g,' ').replace(/\s+/g,' ').trim();
       if(!name||name.length<2||seen.has(name))continue;
-      // v[3]=K, v[4]=V, v[5]=U, v[6]=T, v[7]=Mål (format "3-2"), v[8]=+/-, v[9]=Point
       const pld=parseInt(v[3])||0;
-      const w=parseInt(v[4])||0;
-      const d=parseInt(v[5])||0;
-      const l=parseInt(v[6])||0;
+      const goalMatch=(v[4]||'').match(/(\d+)-(\d+)/);
+      const gf=goalMatch?parseInt(goalMatch[1]):0;
+      const ga=goalMatch?parseInt(goalMatch[2]):0;
+      const pts=parseInt(v[5])||0;
+      // Parse form from img in last cell
+      const formImgs=Array.from(cells[cells.length-1]?.querySelectorAll('img')||[]);
+      const form=formImgs.map(img=>{
+        const src=img.src||'';
+        if(src.includes('prik_w'))return'W';
+        if(src.includes('prik_d'))return'D';
+        if(src.includes('prik_l'))return'L';
+        return null;
+      }).filter(Boolean);
+      const{att,def}=calcStr(gf,ga,Math.max(pld,1));
+      seen.add(name);
+      teams.push({name,pld,gf,ga,pts,w:0,d:0,l:0,att,def,pos:50,
+                  color:teamColor(name,teams.length),form});
+    }
+    if(teams.length>=6)return teams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
+  }
+
+  // Fallback: main table with 11 columns
+  // Structure: pos | logo | name | K | V | U | T | Mål | +/- | Point | Seneste
+  for(const table of doc.querySelectorAll('table.table_grundspil_2017, table.table_standard')){
+    for(const row of table.querySelectorAll('tbody tr')){
+      const cells=Array.from(row.querySelectorAll('td'));
+      if(cells.length<10)continue;
+      const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
+      const posMatch=v[0].match(/^(\d+)\.?$/);
+      if(!posMatch)continue;
+      let name=v[2].replace(/\s*\([A-Z]\)\s*/g,' ').replace(/\s+/g,' ').trim();
+      if(!name||name.length<2||seen.has(name))continue;
+      const pld=parseInt(v[3])||0;
+      const w=parseInt(v[4])||0,d=parseInt(v[5])||0,l=parseInt(v[6])||0;
       const goalMatch=(v[7]||'').match(/(\d+)-(\d+)/);
       const gf=goalMatch?parseInt(goalMatch[1]):0;
       const ga=goalMatch?parseInt(goalMatch[2]):0;
       const pts=parseInt(v[9])||0;
+      const formImgs=Array.from(cells[10]?.querySelectorAll('img')||[]);
+      const form=formImgs.map(img=>{
+        const src=img.src||'';
+        if(src.includes('prik_w'))return'W';
+        if(src.includes('prik_d'))return'D';
+        if(src.includes('prik_l'))return'L';
+        return null;
+      }).filter(Boolean);
       const{att,def}=calcStr(gf,ga,Math.max(pld,1));
       seen.add(name);
       teams.push({name,pld,gf,ga,pts,w,d,l,att,def,pos:50,
-                  color:teamColor(name,teams.length),form:[]});
+                  color:teamColor(name,teams.length),form});
     }
     if(teams.length>=6)return teams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
   }
