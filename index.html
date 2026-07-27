@@ -467,13 +467,12 @@ footer a{color:var(--ob-mid);text-decoration:none}
 <div id="s-2627" class="season on">
 
   <div class="sub-tabs">
-    <button class="sub-tab active" onclick="subTab('2627','ob',this)">OB Forudsigelse</button>
-    <button class="sub-tab" onclick="subTab('2627','liga',this)">Superliga</button>
+    <button class="sub-tab active" onclick="subTab('2627','liga',this)">Superliga</button>
     <button class="sub-tab" onclick="subTab('2627','pokal',this)">DBU Pokalen</button>
   </div>
 
   <!-- OB forudsigelse 2627 -->
-  <div id="t2627-ob" class="sub-c on">
+  <div id="t2627-ob" class="sub-c">
     <div class="pred-hero">
       <div class="pred-label">Sæson 2026/27 · Live data fra SuperStats.dk · Opdateres efter hver kamp</div>
       <div style="display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap">
@@ -508,7 +507,7 @@ footer a{color:var(--ob-mid);text-decoration:none}
   </div>
 
   <!-- Superliga 2627 -->
-  <div id="t2627-liga" class="sub-c">
+  <div id="t2627-liga" class="sub-c on">
     <button class="refresh-btn" id="rb2" onclick="loadData()">↻ Opdater med nyeste data</button>
     <div class="card">
       <div class="card-hdr"><span>Aktuel stilling 2026/27</span><small id="liga-ts-2627">—</small></div>
@@ -580,30 +579,7 @@ const HOLD_2627 = {
   FCK:'F.C. København', LBK:'Lyngby BK',
 };
 
-const OB_KAMPE_2627 = [
-  {r:1,  dato:'24.07',kamp:'VFF - OB',   tid:'19:00',kanal:'TV3 Sport',    hjemme:false},
-  {r:2,  dato:'03.08',kamp:'OB - SJF',   tid:'19:00',kanal:'TV 2 Sport X', hjemme:true},
-  {r:3,  dato:'10.08',kamp:'SIF - OB',   tid:'19:00',kanal:'TV 2 Sport X', hjemme:false},
-  {r:4,  dato:'16.08',kamp:'OB - ACH',   tid:'14:00',kanal:'TV3 Sport',    hjemme:true},
-  {r:5,  dato:'~22.08',kamp:'AGF - OB',  tid:'?',    kanal:'Ikke fastlagt',hjemme:false},
-  {r:6,  dato:'30.08',kamp:'LBK - OB',   tid:'14:00',kanal:'TV 2 Sport X', hjemme:false},
-  {r:7,  dato:'06.09',kamp:'OB - FCK',   tid:'16:00',kanal:'TV 2 Sport X', hjemme:true},
-  {r:8,  dato:'',     kamp:'RFC - OB',   tid:'',     kanal:'',             hjemme:false},
-  {r:9,  dato:'',     kamp:'OB - FCM',   tid:'',     kanal:'',             hjemme:true},
-  {r:10, dato:'',     kamp:'FCN - OB',   tid:'',     kanal:'',             hjemme:false},
-  {r:11, dato:'',     kamp:'OB - BIF',   tid:'',     kanal:'',             hjemme:true},
-  {r:12, dato:'',     kamp:'FCK - OB',   tid:'',     kanal:'',             hjemme:false},
-  {r:13, dato:'',     kamp:'OB - SIF',   tid:'',     kanal:'',             hjemme:true},
-  {r:14, dato:'',     kamp:'OB - VFF',   tid:'',     kanal:'',             hjemme:true},
-  {r:15, dato:'',     kamp:'SJF - OB',   tid:'',     kanal:'',             hjemme:false},
-  {r:16, dato:'',     kamp:'OB - FCN',   tid:'',     kanal:'',             hjemme:true},
-  {r:17, dato:'',     kamp:'BIF - OB',   tid:'',     kanal:'',             hjemme:false},
-  {r:18, dato:'',     kamp:'FCM - OB',   tid:'',     kanal:'',             hjemme:false},
-  {r:19, dato:'',     kamp:'OB - LBK',   tid:'',     kanal:'',             hjemme:true},
-  {r:20, dato:'',     kamp:'OB - AGF',   tid:'',     kanal:'',             hjemme:true},
-  {r:21, dato:'',     kamp:'ACH - OB',   tid:'',     kanal:'',             hjemme:false},
-  {r:22, dato:'',     kamp:'OB - RFC',   tid:'',     kanal:'',             hjemme:true},
-];
+const OB_KAMPE_2627 = []; // Fyldes live fra SuperStats via Worker
 
 const OB_ADVANCED_2526 = {
   rating:      {val:'6,91', rank:6,  label:'FotMob-rating',        kontekst:'6. bedst i ligaen'},
@@ -1076,6 +1052,66 @@ function renderKampprogram2627(){
   }).join('');
 }
 
+
+function parseOBProgram(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const kampe=[];
+  let runde=0;
+
+  for(const table of doc.querySelectorAll('table')){
+    // Check if this is a round table (has "Runde X" header before it)
+    const prev=table.previousElementSibling;
+    const prevText=prev?.textContent||'';
+    const rundeMatch=prevText.match(/Runde\s*(\d+)/);
+    if(rundeMatch) runde=parseInt(rundeMatch[1]);
+    if(!runde)continue;
+
+    for(const row of table.querySelectorAll('tr')){
+      const cells=Array.from(row.querySelectorAll('td'));
+      if(cells.length<3)continue;
+      const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
+
+      // v[0]=dag (Fre/Lør etc), v[1]=dato+tid, v[2]=kamp (e.g. "VFF- OB")
+      const kampRaw=v[2]||'';
+      const isOB=kampRaw.includes('OB');
+      if(!isOB)continue;
+
+      // Parse dato "24/07 19:00" or "24/07 -"
+      const datoMatch=(v[1]||'').match(/(\d+)\/(\d+)(?:\s+(\d+:\d+))?/);
+      const dato=datoMatch?`${datoMatch[1]}.${datoMatch[2]}`:'';
+      const tid=datoMatch&&datoMatch[3]?datoMatch[3]:'';
+
+      // Parse result - check if there's a score link
+      const resLink=cells[3]?.querySelector('a');
+      const resTxt=resLink?.textContent.trim()||'';
+      const hasResult=resTxt.match(/^\d+-\d+$/);
+      const spillet=!!hasResult;
+
+      // Normalize kamp name — "VFF- OB" → "VFF - OB"
+      const kampNorm=kampRaw.replace(/\s*-\s*/g,' - ').replace(/\s+/g,' ').trim();
+      const isHjemme=kampNorm.startsWith('OB');
+      const modstander=kampNorm.replace('OB - ','').replace(' - OB','').trim();
+
+      // Get TV kanal from img alt
+      const tvImg=cells[cells.length-1]?.querySelector('img');
+      const kanal=tvImg?.alt||'';
+
+      let kode=null;
+      if(hasResult){
+        const goals=resTxt.split('-').map(Number);
+        const obG=isHjemme?goals[0]:goals[1];
+        const oppG=isHjemme?goals[1]:goals[0];
+        kode=obG>oppG?'W':obG===oppG?'D':'L';
+      }
+
+      kampe.push({r:runde,dato,tid,kanal,kamp:kampNorm,modstander,
+                  hjemme:isHjemme,spillet,res:hasResult?resTxt:'',kode});
+    }
+  }
+  return kampe.sort((a,b)=>a.r-b.r);
+}
+
+
 // ── SuperStats via Cloudflare Worker ─────────────────────────────────────
 const WORKER_URL = 'https://ob-superliga.bosylvesterpedersen.workers.dev';
 
@@ -1182,13 +1218,20 @@ async function loadData(){
     const aar=encodeURIComponent(`${year}/${year+1}`);
     const [stilRes,obRes]=await Promise.all([
       fetch(`${WORKER_URL}/`),
-      fetch(`${WORKER_URL}/ob`)
+      fetch(`${WORKER_URL}/program`)
     ]);
     if(!stilRes.ok)throw new Error('Worker stilling '+stilRes.status);
     const [stilHtml,obHtml]=await Promise.all([stilRes.text(),obRes.text()]);
     teams=parseWorkerStilling(stilHtml);
     if(!teams||teams.length<6)throw new Error('Stilling ikke fundet — '+teams?.length+' hold');
     obExtra=parseWorkerOB(obHtml);
+    // Parse OB kampprogram live
+    const liveProg=parseOBProgram(obHtml);
+    if(liveProg.length>0){
+      OB_KAMPE_2627.length=0;
+      liveProg.forEach((k,i)=>OB_KAMPE_2627.push({...k,r:i+1}));
+      renderKampprogram2627();
+    }
     source='SuperStats.dk';
     console.log('SuperStats via Worker OK:',teams.length,'hold');
   }catch(e){
