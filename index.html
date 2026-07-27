@@ -581,28 +581,28 @@ const HOLD_2627 = {
 };
 
 const OB_KAMPE_2627 = [
-  {r:1,  dato:'24.07',kamp:'VFF - OB',  tid:'19:00',kanal:'TV3 Sport',    hjemme:false},
-  {r:2,  dato:'03.08',kamp:'OB - SJF',  tid:'19:00',kanal:'TV 2 Sport X', hjemme:true},
-  {r:3,  dato:'10.08',kamp:'SIF - OB',  tid:'19:00',kanal:'TV 2 Sport X', hjemme:false},
-  {r:4,  dato:'16.08',kamp:'OB - ACH',  tid:'14:00',kanal:'TV3 Sport',    hjemme:true},
-  {r:5,  dato:'~22.08',kamp:'AGF - OB', tid:'?',    kanal:'Ikke fastlagt',hjemme:false},
-  {r:6,  dato:'30.08',kamp:'LBK - OB',  tid:'14:00',kanal:'TV 2 Sport X', hjemme:false},
-  {r:7,  dato:'06.09',kamp:'OB - FCK',  tid:'16:00',kanal:'TV 2 Sport X', hjemme:true},
-  {r:8,  dato:'',     kamp:'RFC - OB',  tid:'',     kanal:'',             hjemme:false},
-  {r:9,  dato:'',     kamp:'OB - FCM',  tid:'',     kanal:'',             hjemme:true},
-  {r:10, dato:'',     kamp:'FCN - OB',  tid:'',     kanal:'',             hjemme:false},
-  {r:11, dato:'',     kamp:'OB - BIF',  tid:'',     kanal:'',             hjemme:true},
-  {r:12, dato:'',     kamp:'FCK - OB',  tid:'',     kanal:'',             hjemme:false},
-  {r:13, dato:'',     kamp:'OB - SIF',  tid:'',     kanal:'',             hjemme:true},
-  {r:14, dato:'',     kamp:'OB - VFF',  tid:'',     kanal:'',             hjemme:true},
-  {r:15, dato:'',     kamp:'SJF - OB',  tid:'',     kanal:'',             hjemme:false},
-  {r:16, dato:'',     kamp:'OB - FCN',  tid:'',     kanal:'',             hjemme:true},
-  {r:17, dato:'',     kamp:'BIF - OB',  tid:'',     kanal:'',             hjemme:false},
-  {r:18, dato:'',     kamp:'OB - LBK',  tid:'',     kanal:'',             hjemme:true},
-  {r:19, dato:'',     kamp:'FCM - OB',  tid:'',     kanal:'',             hjemme:false},
-  {r:20, dato:'',     kamp:'OB - AGF',  tid:'',     kanal:'',             hjemme:true},
-  {r:21, dato:'',     kamp:'ACH - OB',  tid:'',     kanal:'',             hjemme:false},
-  {r:22, dato:'',     kamp:'OB - RFC',  tid:'',     kanal:'',             hjemme:true},
+  {r:1,  dato:'24.07',kamp:'VFF - OB',   tid:'19:00',kanal:'TV3 Sport',    hjemme:false},
+  {r:2,  dato:'03.08',kamp:'OB - SJF',   tid:'19:00',kanal:'TV 2 Sport X', hjemme:true},
+  {r:3,  dato:'10.08',kamp:'SIF - OB',   tid:'19:00',kanal:'TV 2 Sport X', hjemme:false},
+  {r:4,  dato:'16.08',kamp:'OB - ACH',   tid:'14:00',kanal:'TV3 Sport',    hjemme:true},
+  {r:5,  dato:'~22.08',kamp:'AGF - OB',  tid:'?',    kanal:'Ikke fastlagt',hjemme:false},
+  {r:6,  dato:'30.08',kamp:'LBK - OB',   tid:'14:00',kanal:'TV 2 Sport X', hjemme:false},
+  {r:7,  dato:'06.09',kamp:'OB - FCK',   tid:'16:00',kanal:'TV 2 Sport X', hjemme:true},
+  {r:8,  dato:'',     kamp:'RFC - OB',   tid:'',     kanal:'',             hjemme:false},
+  {r:9,  dato:'',     kamp:'OB - FCM',   tid:'',     kanal:'',             hjemme:true},
+  {r:10, dato:'',     kamp:'FCN - OB',   tid:'',     kanal:'',             hjemme:false},
+  {r:11, dato:'',     kamp:'OB - BIF',   tid:'',     kanal:'',             hjemme:true},
+  {r:12, dato:'',     kamp:'FCK - OB',   tid:'',     kanal:'',             hjemme:false},
+  {r:13, dato:'',     kamp:'OB - SIF',   tid:'',     kanal:'',             hjemme:true},
+  {r:14, dato:'',     kamp:'OB - VFF',   tid:'',     kanal:'',             hjemme:true},
+  {r:15, dato:'',     kamp:'SJF - OB',   tid:'',     kanal:'',             hjemme:false},
+  {r:16, dato:'',     kamp:'OB - FCN',   tid:'',     kanal:'',             hjemme:true},
+  {r:17, dato:'',     kamp:'BIF - OB',   tid:'',     kanal:'',             hjemme:false},
+  {r:18, dato:'',     kamp:'FCM - OB',   tid:'',     kanal:'',             hjemme:false},
+  {r:19, dato:'',     kamp:'OB - LBK',   tid:'',     kanal:'',             hjemme:true},
+  {r:20, dato:'',     kamp:'OB - AGF',   tid:'',     kanal:'',             hjemme:true},
+  {r:21, dato:'',     kamp:'ACH - OB',   tid:'',     kanal:'',             hjemme:false},
+  {r:22, dato:'',     kamp:'OB - RFC',   tid:'',     kanal:'',             hjemme:true},
 ];
 
 const OB_ADVANCED_2526 = {
@@ -1009,6 +1009,70 @@ function runSim(teams,obIdx){
       <td>${(md>=0?'+':'')+md}</td>
       <td><div class="bar-c"><span style="min-width:32px;font-size:11px;font-weight:600;color:${isOB?'var(--ob)':'var(--tx2)'}">${tp[idx].toFixed(1)}%</span><div class="mini-bar"><div class="mini-fill" style="width:${barW}%"></div></div></div></td>
     </tr>`;
+  }).join('');
+}
+
+
+function parseKampDato(datoStr){
+  if(!datoStr||datoStr==='~22.08'||datoStr==='')return null;
+  const clean=datoStr.replace('~','');
+  const parts=clean.split('.');
+  if(parts.length<2)return null;
+  const day=parseInt(parts[0]),month=parseInt(parts[1])-1;
+  const year=parts.length>=3?2000+parseInt(parts[2]):2026;
+  return new Date(year,month,day);
+}
+
+function renderKampprogram2627(){
+  const el=document.getElementById('kampprogram-2627');
+  if(!el)return;
+  const today=new Date();
+  today.setHours(0,0,0,0);
+
+  el.innerHTML=OB_KAMPE_2627.map(k=>{
+    const hasDato=k.dato&&k.dato!=='';
+    const kampDato=hasDato?parseKampDato(k.dato):null;
+    const isPlayed=kampDato&&kampDato<today;
+    const isToday=kampDato&&kampDato.getTime()===today.getTime();
+    const modstander=k.kamp.replace('OB - ','').replace(' - OB','');
+    const fullName=HOLD_2627[modstander]||modstander;
+    const retningTxt=k.hjemme?'🏠 Hjemme':'✈️ Ude';
+    const retningClr=k.hjemme?'var(--ob-mid)':'var(--tx3)';
+    const tidInfo=hasDato&&k.kanal?`${k.tid} · ${k.kanal}`:hasDato?k.tid:'Dato ikke fastlagt';
+
+    let bg,opacity,strikeStyle,badge;
+    if(isPlayed){
+      bg='var(--surf2)';opacity='.4';strikeStyle='text-decoration:line-through;color:var(--tx3)';
+      badge='<span style="font-size:9px;background:#ddd;color:#888;border-radius:3px;padding:1px 6px;margin-left:6px">Spillet</span>';
+    } else if(isToday){
+      bg='#FEF3C7';opacity='1';strikeStyle='';
+      badge='<span style="font-size:9px;background:#f59e0b;color:#fff;border-radius:3px;padding:1px 6px;margin-left:6px;font-weight:700">I DAG 🔥</span>';
+    } else if(hasDato){
+      bg='var(--ob-l)';opacity='1';strikeStyle='';badge='';
+    } else {
+      bg='var(--surf)';opacity='1';strikeStyle='';badge='';
+    }
+
+    const rndBg=isPlayed?'#bbb':isToday?'#f59e0b':hasDato?'var(--ob)':'var(--surf2)';
+    const rndClr=isPlayed?'#888':hasDato?'#fff':'var(--tx3)';
+    const kampNavn=k.hjemme
+      ?`<span style="color:var(--ob);font-weight:800">OB</span> <span style="color:var(--tx3);font-size:11px">vs</span> ${fullName}`
+      :`${fullName} <span style="color:var(--tx3);font-size:11px">vs</span> <span style="color:var(--ob);font-weight:800">OB</span>`;
+
+    return`<li style="display:flex;align-items:center;gap:10px;padding:.75rem 1rem;
+      border-bottom:.5px solid var(--bdr);background:${bg};opacity:${opacity}">
+      <span style="width:48px;font-size:11px;color:var(--tx3);flex-shrink:0">${k.dato||'—'}</span>
+      <span style="width:24px;height:24px;border-radius:50%;background:${rndBg};
+        color:${rndClr};display:inline-flex;align-items:center;justify-content:center;
+        font-size:9px;font-weight:700;flex-shrink:0">R${k.r}</span>
+      <span style="flex:1;min-width:0">
+        <span style="font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${strikeStyle}">
+          ${kampNavn}${badge}
+        </span>
+        <span style="font-size:11px;color:${retningClr}">${retningTxt}</span>
+        ${hasDato?`<span style="font-size:10px;color:var(--tx3);margin-left:8px">${tidInfo}</span>`:''}
+      </span>
+    </li>`;
   }).join('');
 }
 
