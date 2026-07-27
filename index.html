@@ -877,45 +877,36 @@ const WORKER_URL = 'https://ob-superliga.bosylvesterpedersen.workers.dev';
 function parseWorkerStilling(html){
   const doc=new DOMParser().parseFromString(html,'text/html');
   const teams=[],seen=new Set();
+  // Find the standings table — has headers: # Klub K V U T Mål +/- Point Seneste
   for(const table of doc.querySelectorAll('table')){
-    const rows=Array.from(table.querySelectorAll('tr'));
-    for(const row of rows){
+    const headers=Array.from(table.querySelectorAll('th')).map(th=>th.textContent.trim());
+    // Check if this looks like a standings table
+    const isStanding=headers.includes('Point')||headers.includes('Pt');
+    if(!isStanding)continue;
+    for(const row of table.querySelectorAll('tbody tr')){
       const cells=Array.from(row.querySelectorAll('td'));
-      if(cells.length<5)continue;
+      if(cells.length<8)continue;
       const v=cells.map(c=>c.textContent.replace(/\s+/g,' ').trim());
-      // Position: first cell is "1." or "1"
+      // v[0] = "1." position
       const posMatch=v[0].match(/^(\d+)\.?$/);
       if(!posMatch)continue;
-      // Name: second cell — strip "Logo X", "(P)", "(O)", "(M)"
-      let name=v[1]
-        .replace(/Logo\s*/gi,'')
+      // v[1] = logo img (empty text), v[2] = club name
+      let name=(v[2]||v[1]||'')
         .replace(/\s*\([A-Z]\)\s*/g,' ')
         .replace(/\s+/g,' ').trim();
-      // Sometimes name appears twice e.g. "FC København FC København"
-      const parts=name.split(' ');
-      const half=Math.floor(parts.length/2);
-      if(parts.slice(0,half).join(' ')===parts.slice(half).join(' ')){
-        name=parts.slice(0,half).join(' ');
-      }
       if(!name||name.length<2||seen.has(name))continue;
-      // Stats: K V U T Mål+/- Point
-      // SuperStats format: pos | name | K | V | U | T | Mål | Point | Seneste
-      const pld=parseInt(v[2])||0;
-      // Goals in format "3-2" — find it in any cell
-      let gf=0,ga=0;
-      for(const cell of v){
-        const gm=cell.match(/^(\d+)-(\d+)$/);
-        if(gm){gf=parseInt(gm[1]);ga=parseInt(gm[2]);break;}
-      }
-      // Points — last number before "Seneste"
-      let pts=0;
-      for(let i=v.length-1;i>=4;i--){
-        const n=parseInt(v[i]);
-        if(!isNaN(n)&&n>=0&&n<=pld*3){pts=n;break;}
-      }
+      // v[3]=K, v[4]=V, v[5]=U, v[6]=T, v[7]=Mål (format "3-2"), v[8]=+/-, v[9]=Point
+      const pld=parseInt(v[3])||0;
+      const w=parseInt(v[4])||0;
+      const d=parseInt(v[5])||0;
+      const l=parseInt(v[6])||0;
+      const goalMatch=(v[7]||'').match(/(\d+)-(\d+)/);
+      const gf=goalMatch?parseInt(goalMatch[1]):0;
+      const ga=goalMatch?parseInt(goalMatch[2]):0;
+      const pts=parseInt(v[9])||0;
       const{att,def}=calcStr(gf,ga,Math.max(pld,1));
       seen.add(name);
-      teams.push({name,pld,gf,ga,pts,w:0,d:0,l:0,att,def,pos:50,
+      teams.push({name,pld,gf,ga,pts,w,d,l,att,def,pos:50,
                   color:teamColor(name,teams.length),form:[]});
     }
     if(teams.length>=6)return teams.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
