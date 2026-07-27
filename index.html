@@ -871,6 +871,51 @@ function parsePlayerStatsOB(html){
   return stats;
 }
 
+
+function renderOBStats(teams,obIdx){
+  const ob=teams[obIdx],rank=obIdx+1;
+  document.getElementById('ob-rank').textContent=rank+'.';
+  document.getElementById('ob-pld').textContent=ob.pld;
+  document.getElementById('ob-pts').textContent=ob.pts;
+  document.getElementById('ob-gf').textContent=ob.gf;
+  document.getElementById('ob-ga').textContent=ob.ga;
+  document.getElementById('ob-wdl').textContent=`${ob.w}·${ob.d}·${ob.l}`;
+  const gd=ob.gf-ob.ga,gpg=(ob.gf/Math.max(ob.pld,1)).toFixed(2),cgpg=(ob.ga/Math.max(ob.pld,1)).toFixed(2);
+  document.getElementById('ob-verdict').textContent=
+    rank<=6?`💙 Stærk sæson! OB sluttede på ${rank}. plads med ${ob.pts} point.`
+    :rank<=9?`OB sluttede på ${rank}. plads med ${ob.pts} point.`
+    :`Hård sæson — ${rank}. plads med ${ob.pts} point.`;
+  document.getElementById('ins-att').textContent=`${ob.gf} mål på ${ob.pld} kampe — ${gpg} per kamp.`;
+  document.getElementById('ins-def').textContent=`${ob.ga} mål indkasset — ${cgpg} per kamp.`;
+  document.getElementById('ins-bal').textContent=`${ob.w} sejre, ${ob.d} uafgjorte, ${ob.l} nederlag. MD: ${gd>=0?'+':''}${gd}.`;
+  if(chartLiga)chartLiga.destroy();
+  const sorted=[...teams].sort((a,b)=>b.pts-a.pts);
+  chartLiga=new Chart(document.getElementById('chart-liga'),{
+    type:'bar',
+    data:{labels:sorted.map(t=>t.name),datasets:[
+      {data:sorted.map(t=>t.gf),backgroundColor:sorted.map(t=>isOB(t.name)?'#003B75':'#B4B2A9'),borderWidth:0},
+      {data:sorted.map(t=>t.ga),backgroundColor:sorted.map(t=>isOB(t.name)?'#85B7EB':'#D3D1C7'),borderWidth:0},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{autoSkip:false,maxRotation:45,font:{size:10}}},y:{title:{display:true,text:'Mål',font:{size:10}}}}}
+  });
+}
+
+function renderLiga(teams,obIdx){
+  document.getElementById('liga-tbody').innerHTML=teams.map((t,i)=>{
+    const isOB=i===obIdx,md=t.gf-t.ga;
+    const zone=i<6?`<span class="zt">Top 6</span>`:i>=9?`<span class="zr">Nedryk.</span>`:'';
+    return`<tr class="${isOB?'ob-r':''}">
+      <td><span class="pos-b">${i+1}</span></td>
+      <td>${t.name}${isOB?' ★':''}${zone}</td>
+      <td>${t.pld}</td><td><strong>${t.pts}</strong></td>
+      <td>${t.gf}</td><td>${t.ga}</td>
+      <td>${(md>=0?'+':'')+md}</td>
+      <td>${formCell(t.form)}</td>
+    </tr>`;
+  }).join('');
+}
+
 // ── SuperStats via Cloudflare Worker ─────────────────────────────────────
 const WORKER_URL = 'https://ob-superliga.bosylvesterpedersen.workers.dev';
 
